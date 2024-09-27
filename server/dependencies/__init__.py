@@ -1,1 +1,1 @@
-from .auth_service import auth_service
+from .inference_service import inference_service

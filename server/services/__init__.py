@@ -1,1 +1,1 @@
-from .authentification import AuthService
+from .inference import InferenceService
