@@ -47,6 +47,7 @@ class InferenceService:
         """
         Train a model on the frames and return the path to the model.
         """
+        """
         embeddings, labels = load_dataset(frames_path, cache=True)
         embeddings = (embeddings - np.mean(embeddings, axis=0)) / np.std(
             embeddings, axis=0
@@ -69,3 +70,11 @@ class InferenceService:
         save_model_path: str = f"temp/model/{user_id}.zip"
         quantized_module.fhe_circuit.server.save(save_model_path)
         return save_model_path
+        """
+        return "temp/model/fake_id.zip"
+
+    def push_model(self, model_path: str, user_id: str) -> None:
+        """
+        Push the model to the servrer
+        """
+        # TODO

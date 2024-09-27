@@ -153,7 +153,8 @@
                 if (response.ok) {
                     window.location.href = '/index';
                 } else {
-                    document.getElementById('error-message').innerText = 'Erreur lors de la création du compte.';
+                    const errorData = await response.json();
+                    document.getElementById('error-message').innerText = `Erreur lors de la création du compte: ${errorData.detail || 'Unknown error'}`;
                 }
             } catch (error) {
                 document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';

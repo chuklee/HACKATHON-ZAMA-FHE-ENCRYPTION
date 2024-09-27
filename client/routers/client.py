@@ -13,6 +13,7 @@ import os
 import tempfile
 import logging
 from typing import List
+
 router = APIRouter(tags=["Client"])
 
 
@@ -54,8 +55,8 @@ async def get_image(
 
 @router.post("/submitAccount")
 async def submit_account(
-    email: str = Form(...),
     video: UploadFile = File(...),
+    email: str = Form(...),
     i_service: InferenceService = Depends(inference_service),
 ):
     """
@@ -66,9 +67,11 @@ async def submit_account(
     logging.info(
         f"Received video: filename={video.filename}, content_type={video.content_type}"
     )
+    logging.info(f"Received email: {email}")
+    
     video_content: bytes = await video.read()
-
     video_id: str = i_service.save_video(video_content=video_content)
     frames_path: str = i_service.save_frames(video_id=video_id)
-    i_service.train_model(frames_path=frames_path)
-    return JSONResponse(content={"message": "Video saved successfully"})
+    model_path: str = i_service.train_model(frames_path=frames_path, user_id=email)
+    i_service.push_model(model_path=model_path, user_id=email)
+    return JSONResponse(content={"message": "Account created successfully"})
