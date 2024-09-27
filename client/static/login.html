@@ -45,7 +45,7 @@
             try {
                 const emailEncoded = encodeURIComponent(email);
 
-                const url = `http://0.0.0.0:8000/login?email=${emailEncoded}`;
+                const url = `http://localhost:8000/login?email=${emailEncoded}`;
 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -57,9 +57,8 @@
                 if (response.ok) {
                     window.location.href = '/index';
                 } else {
-                    window.location.href = '/createAccount';
+                    window.location.href = `/createAccount?email=${emailEncoded}`;
                 }
-
 
             } catch (error) {
                 document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';

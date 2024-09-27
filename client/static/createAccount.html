@@ -45,6 +45,18 @@
     </footer>
 
     <script>
+        // Add this function at the beginning of the script
+        function fillEmailFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            if (email) {
+                document.getElementById('email').value = decodeURIComponent(email);
+            }
+        }
+
+        // Call this function when the page loads
+        window.onload = fillEmailFromUrl;
+
         let mediaRecorder;
         let recordedChunks = [];
     

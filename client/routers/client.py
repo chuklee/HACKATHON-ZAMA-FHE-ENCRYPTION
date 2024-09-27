@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Depends , Form
+from fastapi import APIRouter, UploadFile, File, Depends , Form, Request
 from fastapi.responses import FileResponse, JSONResponse
 from client.dependencies import inference_service
 from client.services import InferenceService
@@ -17,7 +17,7 @@ router = APIRouter(tags=["Client"])
 
 
 @router.get(path="/")
-def static_index() -> FileResponse:
+def login() -> FileResponse:
     return FileResponse(path="client/static/login.html")
 
 @router.get(path="/index")
@@ -25,7 +25,7 @@ def static_index() -> FileResponse:
     return FileResponse(path="client/static/index.html")
 
 @router.get(path="/createAccount")
-def static_index() -> FileResponse:
+def create_account(request: Request) -> FileResponse:
     return FileResponse(path="client/static/createAccount.html")
 
 
