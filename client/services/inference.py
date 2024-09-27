@@ -43,7 +43,7 @@ class InferenceService:
         cap.release()
         return f"temp/{video_id}/"
 
-    def train_model(self, frames_path: str) -> str:
+    def train_model(self, frames_path: str, user_id: str) -> str:
         """
         Train a model on the frames and return the path to the model.
         """
@@ -66,3 +66,6 @@ class InferenceService:
             n_bits=6,
             rounding_threshold_bits={"n_bits": 6, "method": "approximate"},
         )
+        save_model_path: str = f"temp/model/{user_id}.zip"
+        quantized_module.fhe_circuit.server.save(save_model_path)
+        return save_model_path
