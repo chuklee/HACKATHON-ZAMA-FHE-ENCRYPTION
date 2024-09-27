@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     """
 
     SERVICE_PORT: int | None = Field(default=7860)
+    TEMP_VIDEO_PATH: str = Field(default="/tmp/video.webm")
 
 
 settings = Settings()  # type: ignore
