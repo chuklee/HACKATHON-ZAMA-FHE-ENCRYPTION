@@ -196,7 +196,8 @@
                 if (response.ok) {
                     window.location.href = '/index';
                 } else {
-                    document.getElementById('error-message').innerText = 'Error occurred while creating the account.';
+                    const errorData = await response.json();
+                    document.getElementById('error-message').innerText = `Error occurred while creating the account: ${errorData.detail || 'Unknown error'}`;
                 }
             } catch (error) {
                 document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';
