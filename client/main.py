@@ -23,7 +23,7 @@ def main() -> None:
     """Main function to set up logging and run the server."""
     app: FastAPI = create_app()
 
-    uvicorn.run(app=app, host="0.0.0.0", port=int(settings.SERVICE_PORT)) # type: ignore
+    uvicorn.run(app=app, host="0.0.0.0", port=7860)
 
 
 if __name__ == "__main__":
