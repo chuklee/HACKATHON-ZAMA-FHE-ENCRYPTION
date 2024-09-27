@@ -1,4 +1,3 @@
-from typing import Literal
 from fastapi import APIRouter, Depends, HTTPException
 from server.dependencies import auth_service
 from server.services import AuthService

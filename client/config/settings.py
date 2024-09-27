@@ -8,5 +8,7 @@ class Settings(BaseSettings):
     in the directory root.
     """
 
+    SERVICE_PORT: int | None = Field(default=7860)
+
 
 settings = Settings()  # type: ignore
