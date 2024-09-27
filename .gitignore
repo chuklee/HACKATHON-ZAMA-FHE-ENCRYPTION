@@ -20,7 +20,5 @@ test*
 # minio data
 minio-data/
 
-data/deepfake/embeddings.npy
-data/deepfake/labels.npy
-data/lfw_people/George_HW_Bush/embeddings.npy
-data/lfw_people/George_HW_Bush/labels.npy
+embeddings.npy
+labels.npy
