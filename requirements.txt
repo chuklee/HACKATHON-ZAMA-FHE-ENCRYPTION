@@ -1,0 +1,6 @@
+scikit-learn==1.5.2
+pandas==2.2.3
+numpy==2.1.1
+concrete-ml==1.6.1
+deepface==0.0.93
+xgboost==2.1.1
