@@ -1,6 +1,7 @@
 from typing import Any
 from PIL import Image, ImageFile
 import numpy as np
+from tqdm import tqdm
 from glob import glob
 import os
 
@@ -16,7 +17,7 @@ def compute_embeddings_and_labels(images: list[str], label: int) -> np.ndarray:
     from deepface import DeepFace
     embeddings = []
     labels = []
-    for image in images:
+    for image in tqdm(images):
         try:
             embedding_obj = DeepFace.represent(
                 img_path=image,
