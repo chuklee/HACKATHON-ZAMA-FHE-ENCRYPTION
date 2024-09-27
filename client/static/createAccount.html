@@ -6,51 +6,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechMart - Créer un compte</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 
-<body class="bg-gray-900 text-white min-h-screen flex flex-col">
-    <header class="bg-gray-800 p-4">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col" style="background-image: url('/static/images/background.jpg');">
+    <!-- <header class="bg-gray-800 p-4">
         <h1 class="text-3xl font-bold text-center"><i class="fas fa-user-plus mr-2"></i>Créer un compte</h1>
-    </header>
+    </header> -->
 
-    <main class="flex-grow container mx-auto p-4 flex items-center justify-center">
-        <div class="max-w-md w-full bg-gray-800 rounded-lg shadow-lg p-6">
-            <h2 class="text-2xl font-semibold mb-6 text-center">Enregistrement Vidéo</h2>
-            <form id="create-account-form" method="POST" action="/submitAccount" class="space-y-4"
-                enctype="multipart/form-data">
-                <div>
-                    <label for="email" class="block text-sm font-medium"> Email Address </label>
-                    <input type="email" id="email" name="email" required
-                        class="w-full px-3 py-2 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
+    
+    <main class="flex-grow container mx-auto p-6 flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 lg:space-x-12">
+    
+<!-- Camera Section -->
+<div class="max-w-md w-full p-6 lg:p-0 lg:w-1/2 flex flex-col items-center video-reveal">
+    <div class="relative">
+        <video id="video-preview" autoplay muted class="w-full max-w-md max-h-md aspect-square bg-black rounded-full object-cover shadow-2xl ring-4 ring-gray-300 ring-opacity-50 hover:ring-blue-500 hover:ring-opacity-75 transition-all duration-300 ease-in-out transform hover:scale-105"></video>
 
-                <div class="mt-6 text-center relative">
-                    <video id="video-preview" autoplay muted class="w-full bg-black rounded-md"></video>
-                    <div id="rec-indicator"
-                        class="hidden absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full animate-pulse"></div>
-                    <button type="button" id="start-recording"
-                        class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        <i class="fas fa-video mr-2"></i>Commencer l'enregistrement
-                    </button>
-                </div>
+        <!-- Recording indicator -->
+        <div id="rec-indicator" class="hidden absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full animate-pulse"></div>
+    </div>
 
-                <button type="submit"
-                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-6">
-                    <i class="fas fa-user-plus mr-2"></i>Créer un compte
-                </button>
-            </form>
+    <!-- Start Recording Button -->
+    <div class="text-center mt-6">
+        <button type="button" id="start-recording" class="bg-red-600 hover:bg-red-700 text-white font-bold w-16 h-16 rounded-full flex items-center justify-center animate-pulse hover:scale-110 active:scale-95 transition-all duration-300 ease-in-out">
+            <i class="fas fa-video"></i>
+        </button>
+    </div>
+</div>
 
-            <div id="error-message" class="mt-4 text-center text-red-500"></div>
+<!-- Form Section -->
+<div class="max-w-md w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 lg:w-1/2 transform transition-all duration-300 hover:scale-102 hover:shadow-md form-reveal">
+    <form id="create-account-form" method="POST" action="/submitAccount" class="space-y-6" enctype="multipart/form-data">
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-300">Email Address</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-3 mt-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
         </div>
-    </main>
+        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102">
+            Create Account 🤗
+        </button>
+    </form>
+    <div id="error-message" class="mt-4 text-center text-red-500"></div>
+</div>
 
-    <footer class="bg-gray-800 p-4 text-center">
+
+    
+    </main>
+    
+    <!-- <footer class="bg-gray-800 p-4 text-center">
         <p>&copy; 2023 TechMart. Tous droits réservés.</p>
-    </footer>
+    </footer> -->
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation pour la section vidéo avec un zoom-in et glissement vers le haut
+            ScrollReveal().reveal('.video-reveal', {
+                duration: 1200,          // Durée de l'animation
+                scale: 0.9,              // Zoom initial (90%)
+                distance: '30px',        // Glissement vers le haut
+                origin: 'bottom',        // Animation qui part du bas
+                opacity: 0,              // Apparition progressive
+                easing: 'ease-in-out',   // Transition fluide
+                delay: 200               // Délai avant le début
+            });
+    
+            // Animation pour la section formulaire avec un glissement depuis la droite
+            ScrollReveal().reveal('.form-reveal', {
+                duration: 1200,          // Durée de l'animation
+                distance: '60px',        // Distance de glissement depuis la droite
+                origin: 'right',         // Animation qui part de la droite
+                opacity: 0,              // Apparition progressive
+                easing: 'ease-in-out',   // Transition fluide
+                delay: 400               // Délai un peu plus long pour que l'effet soit coordonné
+            });
+    
+            // Appelle la fonction de caméra et remplissage de l'email après le chargement de la page
+            fillEmailFromUrl();
+            startCamera();
+        });
+
         // Add this function at the beginning of the script
         function fillEmailFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -92,43 +128,50 @@
         document.getElementById('start-recording').addEventListener('click', function () {
             if (stream) {
                 if (!isRecording) {
+                    // Démarrer l'enregistrement
                     mediaRecorder = new MediaRecorder(stream);
                     recordedChunks = [];
-
+                
                     mediaRecorder.ondataavailable = function (event) {
                         if (event.data.size > 0) {
                             recordedChunks.push(event.data);
                         }
                     };
-
+                
                     mediaRecorder.start();
                     isRecording = true;
                     recIndicator.classList.remove('hidden');
-                    this.innerHTML = '<i class="fas fa-stop-circle mr-2"></i>Arrêter l\'enregistrement';
-                    this.classList.replace('bg-blue-600', 'bg-red-600');
-                    this.classList.replace('hover:bg-blue-700', 'hover:bg-red-700');
-
+                
+                    // Ajouter une classe d'animation plus subtile pour indiquer que l'enregistrement est en cours
+                    this.classList.remove('bg-red-600', 'hover:bg-red-700');
+                    this.classList.add('bg-red-700', 'animate-pulse');
+                    this.innerHTML = '<i class="fas fa-stop-circle"></i>';
+                
+                    // Arrêter automatiquement après 5 secondes
                     setTimeout(() => {
                         if (isRecording) {
                             stopRecording();
                         }
-                    }, 5000); // Enregistrement de 5 secondes
+                    }, 5000);
                 } else {
+                    // Arrêter l'enregistrement
                     stopRecording();
                 }
             } else {
-                document.getElementById('error-message').innerText = 'La caméra n\'est pas accessible. Veuillez rafraîchir la page.';
+                document.getElementById('error-message').innerText = 'Camera is not accessible. Please refresh the page.';
             }
         });
-
+        
         function stopRecording() {
             mediaRecorder.stop();
             isRecording = false;
             recIndicator.classList.add('hidden');
+        
+            // Remettre le bouton à son état initial (pulsation désactivée et retour au style initial)
             const recordButton = document.getElementById('start-recording');
-            recordButton.innerHTML = '<i class="fas fa-video mr-2"></i>Réenregistrer';
-            recordButton.classList.replace('bg-red-600', 'bg-blue-600');
-            recordButton.classList.replace('hover:bg-red-700', 'hover:bg-blue-700');
+            recordButton.classList.remove('bg-red-700', 'animate-pulse');
+            recordButton.classList.add('bg-red-600', 'hover:bg-red-700');
+            recordButton.innerHTML = '<i class="fas fa-video"></i>';
         }
 
         document.getElementById('create-account-form').addEventListener('submit', async function (event) {
@@ -153,11 +196,11 @@
                 if (response.ok) {
                     window.location.href = '/index';
                 } else {
-                    document.getElementById('error-message').innerText = 'Erreur lors de la création du compte.';
+                    document.getElementById('error-message').innerText = 'Error occurred while creating the account.';
                 }
             } catch (error) {
                 document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';
-                console.error('Erreur lors de l\'envoi du formulaire:', error);
+                console.error('Error while submitting the form:', error);
             }
         });
     </script>

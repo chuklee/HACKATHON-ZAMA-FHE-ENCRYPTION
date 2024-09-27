@@ -49,3 +49,14 @@ input[type="text"] {
     height: 240px;
     margin: 20px auto;
 }
+
+body {
+    background-image: url('/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.bg-transparent {
+    background-color: rgba(128, 128, 128, 0); /* Adjust the alpha value for desired transparency */
+}
