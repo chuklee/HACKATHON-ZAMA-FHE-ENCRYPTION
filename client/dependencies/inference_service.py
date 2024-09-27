@@ -1,4 +1,4 @@
-from app.services import InferenceService
+from client.services import InferenceService
 
 
 def inference_service() -> InferenceService:

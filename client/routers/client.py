@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Depends
 from fastapi.responses import FileResponse, JSONResponse
-from app.dependencies import inference_service
-from app.services import InferenceService
+from client.dependencies import inference_service
+from client.services import InferenceService
 
 router = APIRouter(tags=["Client"])
 

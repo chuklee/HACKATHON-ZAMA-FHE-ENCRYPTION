@@ -3,8 +3,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import client_router
-from app.config.settings import settings
+from client.routers import client_router
+from client.config.settings import settings
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
