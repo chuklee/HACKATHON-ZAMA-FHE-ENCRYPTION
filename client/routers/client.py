@@ -12,7 +12,7 @@ import numpy as np
 import os
 import tempfile
 import logging
-
+from typing import List
 router = APIRouter(tags=["Client"])
 
 
@@ -69,5 +69,6 @@ async def submit_account(
     video_content: bytes = await video.read()
 
     video_id: str = i_service.save_video(video_content=video_content)
-    frames = i_service.extract_frames(video_id=video_id)
+    frames_path: str = i_service.save_frames(video_id=video_id)
+    i_service.train_model(frames_path=frames_path)
     return JSONResponse(content={"message": "Video saved successfully"})
