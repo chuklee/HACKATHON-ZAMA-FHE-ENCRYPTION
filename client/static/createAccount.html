@@ -23,8 +23,9 @@
                            class="w-full px-3 py-2 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             
-                <div class="mt-6 text-center">
+                <div class="mt-6 text-center relative">
                     <video id="video-preview" autoplay muted class="w-full bg-black rounded-md"></video>
+                    <div id="rec-indicator" class="hidden absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full animate-pulse"></div>
                     <button type="button" id="start-recording" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                         <i class="fas fa-video mr-2"></i>Commencer l'enregistrement
                     </button>
@@ -55,42 +56,76 @@
         }
 
         // Call this function when the page loads
-        window.onload = fillEmailFromUrl;
+        window.onload = function() {
+            fillEmailFromUrl();
+            startCamera();
+        };
 
         let mediaRecorder;
         let recordedChunks = [];
-    
-        document.getElementById('start-recording').addEventListener('click', async function() {
+        let stream;
+        let isRecording = false;
+        const recIndicator = document.getElementById('rec-indicator');
+
+        // Function to start the camera
+        async function startCamera() {
             const videoPreview = document.getElementById('video-preview');
-    
+            
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    stream = await navigator.mediaDevices.getUserMedia({ video: true });
                     videoPreview.srcObject = stream;
-    
+                } catch (error) {
+                    console.error('Erreur lors de l\'accès à la caméra:', error);
+                    document.getElementById('error-message').innerText = 'Erreur lors de l\'accès à la caméra. Veuillez vérifier vos permissions.';
+                }
+            } else {
+                document.getElementById('error-message').innerText = 'Votre navigateur ne supporte pas l\'accès à la caméra.';
+            }
+        }
+
+        document.getElementById('start-recording').addEventListener('click', function() {
+            if (stream) {
+                if (!isRecording) {
                     mediaRecorder = new MediaRecorder(stream);
-    
+                    recordedChunks = [];
+
                     mediaRecorder.ondataavailable = function(event) {
                         if (event.data.size > 0) {
                             recordedChunks.push(event.data);
                         }
                     };
-    
+
                     mediaRecorder.start();
-    
+                    isRecording = true;
+                    recIndicator.classList.remove('hidden');
+                    this.innerHTML = '<i class="fas fa-stop-circle mr-2"></i>Arrêter l\'enregistrement';
+                    this.classList.replace('bg-blue-600', 'bg-red-600');
+                    this.classList.replace('hover:bg-blue-700', 'hover:bg-red-700');
+
                     setTimeout(() => {
-                        mediaRecorder.stop();
-                        stream.getTracks().forEach(track => track.stop());
+                        if (isRecording) {
+                            stopRecording();
+                        }
                     }, 5000); // Enregistrement de 5 secondes
-    
-                } catch (error) {
-                    console.error('Erreur lors de l\'accès à la caméra:', error);
+                } else {
+                    stopRecording();
                 }
             } else {
-                document.getElementById('error-message').innerText = 'Votre navigateur ne supporte pas l\'enregistrement vidéo.';
+                document.getElementById('error-message').innerText = 'La caméra n\'est pas accessible. Veuillez rafraîchir la page.';
             }
         });
-    
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            isRecording = false;
+            recIndicator.classList.add('hidden');
+            const recordButton = document.getElementById('start-recording');
+            recordButton.innerHTML = '<i class="fas fa-video mr-2"></i>Réenregistrer';
+            recordButton.classList.replace('bg-red-600', 'bg-blue-600');
+            recordButton.classList.replace('hover:bg-red-700', 'hover:bg-blue-700');
+        }
+
         document.getElementById('create-account-form').addEventListener('submit', async function(event) {
             event.preventDefault();
     
