@@ -5,10 +5,10 @@ from glob import glob
 import os
 
 
-def load_image_folder(folder_path: str) -> list[ImageFile.ImageFile]:
+def load_image_folder(folder_path: str, max_nb_images=500) -> list[ImageFile.ImageFile]:
     image_path = f"{folder_path}/*"
     image_paths = glob(image_path)
-    images = [image_path for image_path in image_paths[:5]]
+    images = [image_path for image_path in image_paths[:max_nb_images]]
     return images
 
 
