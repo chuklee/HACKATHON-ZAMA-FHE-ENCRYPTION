@@ -49,4 +49,3 @@ def load_dataset(target_folder: str, cache=False, deep_fake_folder: str = "./dat
 
 if __name__ == "__main__":
     embeddings , labels = load_dataset("./data/lfw_people/George_HW_Bush", cache=True)
-
