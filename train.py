@@ -1,18 +1,5 @@
-import os
 from concrete.compiler import parameter
-import cv2
-import tempfile
 import numpy as np
-import pandas as pd
-from torch.utils.data import random_split
-from tqdm import tqdm
-from sklearn.datasets import fetch_olivetti_faces
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-from deepface import DeepFace
-import xgboost as xgb
-import warnings
 from concrete import fhe
 from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
 from concrete.ml.sklearn import SGDClassifier
@@ -26,7 +13,7 @@ class ModelsCluster():
     def getModel(self, pubkey: str) -> dict[str, SklearnSGDClassifierMixin]:
         return self.models[pubkey]
 
-    def fit(self, X, y, pubkey: str) -> None:
+    def fit(self, X: np.ndarray, y: np.ndarray, pubkey: str) -> None:
         parameters_range = (-1.0, 1.0)
 
         fhe_model = SGDClassifier(
@@ -42,8 +29,14 @@ class ModelsCluster():
 
 
 
-
 if __name__ == "__main__":
+    # Registration
+    """
+    Here we receive the pictures of the user wanting to register.
+    We crop then embedd the pictures and merge them into the existing dataset.
+    Once this is done we train the model and bind it to it's public key.
+    """
+
     cluster = ModelsCluster()
 
     X = np.load("data/facenet_olivetti/x.npy")
@@ -54,5 +47,6 @@ if __name__ == "__main__":
     X_facenet_median = np.median(X, axis=1)
 
     X_facenet_features = np.stack([X_facenet_rms, X_facenet_mean, X_facenet_median], axis=1)
+
 
     cluster.fit(X_facenet_features, y, "HERE IS MY PUBLIC KEY")
