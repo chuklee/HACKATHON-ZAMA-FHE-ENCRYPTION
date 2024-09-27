@@ -19,3 +19,6 @@ test*
 
 # minio data
 minio-data/
+
+embeddings.npy
+labels.npy

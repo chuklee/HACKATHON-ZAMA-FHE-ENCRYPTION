@@ -2,9 +2,7 @@ import uvicorn
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
-from app.routers import client_router
-from app.config.settings import settings
+from client.routers import client_router
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
@@ -15,7 +13,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(router=client_router)
-    app.mount("/static", StaticFiles(directory="app/static"), name="static")
+    app.mount("/static", StaticFiles(directory="client/static"), name="static")
     return app
 
 
@@ -23,7 +21,7 @@ def main() -> None:
     """Main function to set up logging and run the server."""
     app: FastAPI = create_app()
 
-    uvicorn.run(app=app, host="0.0.0.0", port=int(settings.SERVICE_PORT)) # type: ignore
+    uvicorn.run(app=app, host="0.0.0.0", port=7860)
 
 
 if __name__ == "__main__":

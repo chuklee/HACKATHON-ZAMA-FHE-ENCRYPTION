@@ -46,6 +46,24 @@ function processImage() {
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
     
+    // Convert canvas to blob and send to server
+    canvas.toBlob((blob) => {
+        const formData = new FormData();
+        formData.append('image', blob, 'captured_image.jpg');
+
+        fetch('/get_image', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+          .then(data => {
+              console.log('Image saved:', data.filename);
+              // You can update the UI here if needed
+          }).catch(error => {
+              console.error('Error saving image:', error);
+              statusDiv.innerHTML = '<i class="fas fa-exclamation-circle text-red-500"></i> Error saving image';
+          });
+    }, 'image/jpeg');
+
     // Simulate face recognition process
     setTimeout(() => {
         statusDiv.innerHTML = '<i class="fas fa-check-circle text-green-500"></i> Welcome, User!';
