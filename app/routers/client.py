@@ -1,25 +1,32 @@
-from fastapi import APIRouter, Form, UploadFile, File
-from fastapi.responses import FileResponse, HTMLResponse
-import os
+from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi.responses import FileResponse, JSONResponse
+from app.dependencies import inference_service
+from app.services import InferenceService
 
 router = APIRouter(tags=["Client"])
 
-@router.get("/")
-def static_index():
-    return FileResponse("app/static/index.html")
 
-@router.post("/submit")
-async def submit_form(user_input: str = Form(...), image: UploadFile = File(...)):
-    print(f"User input: {user_input}")
-    
-    # Save the uploaded image
-    upload_dir = "app/uploads"
-    os.makedirs(upload_dir, exist_ok=True)
-    file_path = os.path.join(upload_dir, image.filename)  # type: ignore
-    with open(file_path, "wb") as buffer:
-        content = await image.read()
-        buffer.write(content)
-    
-    print(f"Image saved: {file_path}")
-    
-    return HTMLResponse("<h1>Form submitted successfully!</h1><p>Image uploaded and saved.</p><a href='/'>Go back</a>")
+@router.get(path="/")
+def static_index() -> FileResponse:
+    return FileResponse(path="app/static/index.html")
+
+
+@router.post("/get_image")
+async def get_image(
+    image: UploadFile = File(...),
+    inference_service: InferenceService = Depends(inference_service),
+) -> JSONResponse:
+    # Read the contents of the file
+    contents = await image.read()
+
+    # Get the size of the image
+    size = len(contents)
+
+    # Return a confirmation message with the size of the image
+    return JSONResponse(
+        content={
+            "message": "Image received successfully",
+            "filename": image.filename,
+            "size": size,
+        }
+    )
