@@ -1,0 +1,21 @@
+# IDEs
+vscode/
+.idea/
+
+# Python venv
+venv
+
+# env files
+.env
+
+# Python __pycache__ directories.
+__pycache__/
+
+# logs
+logs/
+
+# test files
+test*
+
+# minio data
+minio-data/

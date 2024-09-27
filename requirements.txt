@@ -6,3 +6,6 @@ deepface==0.0.93
 xgboost==1.6.2
 tf-keras==2.16.0
 matplotlib==3.9.2
+fastapi==0.111.0
+pydantic-settings==2.3.0
+pydantic==2.7.2
