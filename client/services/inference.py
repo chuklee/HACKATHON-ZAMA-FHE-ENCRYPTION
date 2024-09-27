@@ -10,38 +10,43 @@ import cv2
 from .preprocess import load_dataset, RegNet
 from sklearn.linear_model import LogisticRegression
 from concrete.ml.torch.compile import compile_torch_model
+import logging
 
 
 class InferenceService:
     def __init__(self):
         self.model = None
 
-    def save_video(self, video_content: bytes) -> str:
+    def save_video(self, video_content: bytes, user_id: str) -> None:
         """
         Extract frames from the video content asynchronously using FFmpeg.
         """
         try:
             video_id = str(uuid.uuid4())
-            os.makedirs("temp", exist_ok=True)
-            with open(file=f"temp/{video_id}.mp4", mode="wb") as f:
+            os.makedirs(f"temp/{user_id}", exist_ok=True)
+            with open(file=f"temp/{user_id}/video.mp4", mode="wb") as f:
                 f.write(video_content)
-            return video_id
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error saving video: {e}")
 
-    def save_frames(self, video_id: str) -> str:
+    def save_frames(self,user_id: str) -> str:
         """
         Save 10 random frames from the video content using cv2 and return the path to the frames.
         """
-        cap = cv2.VideoCapture(filename=f"temp/{video_id}.mp4")
-        for i in range(10):
-            ret, frame = cap.read()
-            if ret:
-                cv2.imwrite(filename=f"temp/{video_id}/frame_{i}.jpg", img=frame)
-            else:
-                raise HTTPException(status_code=500, detail=f"Error saving frame {i}")
-        cap.release()
-        return f"temp/{video_id}/"
+        video_path = f"temp/{user_id}/video.mp4"
+        if not os.path.exists(video_path):
+            raise HTTPException(status_code=404, detail="Video not found")
+
+        vidcap = cv2.VideoCapture(video_path)
+        success, image = vidcap.read()
+        count = 0
+        while success and count < 10:
+            cv2.imwrite(
+                f"temp/{user_id}/frame%d.jpg" % count, image
+            )  # save frame as JPEG file
+            success, image = vidcap.read()
+            count += 1
+        return f"temp/{user_id}/"
 
     def train_model(self, frames_path: str, user_id: str) -> str:
         """
