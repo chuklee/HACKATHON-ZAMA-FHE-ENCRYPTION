@@ -50,7 +50,16 @@ def load_dataset(target_folder: str, max_nb_images=500, cache=True, deep_fake_fo
     labels = np.hstack([target_images_labels, deep_fake_labels])
     return embeddings, labels
 
+def featurisation(embeddings: np.ndarray) -> np.ndarray:
+    rms =  np.sqrt(np.mean(embeddings**2, axis=1))
+    mean = np.mean(embeddings, axis=1)
+    median = np.median(embeddings, axis=1)
+    features = np.stack([rms, mean, median], axis=1)
+    return features
 
 if __name__ == "__main__":
     embeddings, labels = load_dataset(
         "./data/lfw_people/George_HW_Bush", cache=True)
+    embeddings = featurisation(embeddings)
+    print(embeddings.shape)
+    
