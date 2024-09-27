@@ -10,7 +10,7 @@ class ModelsCluster():
     def __init__(self) -> None:
         self.models = {}
 
-    def getModel(self, pubkey: str) -> dict[str, SklearnSGDClassifierMixin]:
+    def getModel(self, pubkey: str) -> SklearnSGDClassifierMixin:
         return self.models[pubkey]
 
     def fit(self, X: np.ndarray, y: np.ndarray, pubkey: str) -> None:
@@ -27,6 +27,10 @@ class ModelsCluster():
         fhe_model.compile(X)
         self.models[pubkey] = fhe_model
 
+    def predict(self, pubkey: str, emb_image: np.ndarray) -> bool:
+        model = self.getModel(pubkey)
+        res = model.predict(emb_image, fhe="execute")
+        return res[0] == 0
 
 
 if __name__ == "__main__":
@@ -37,7 +41,10 @@ if __name__ == "__main__":
     Once this is done we train the model and bind it to it's public key.
     """
 
+    # Instantiate cluster.
     cluster = ModelsCluster()
+
+    ################### DATASET #####################
 
     X = np.load("data/facenet_olivetti/x.npy")
     y = np.load("data/facenet_olivetti/y.npy")
@@ -48,5 +55,19 @@ if __name__ == "__main__":
 
     X_facenet_features = np.stack([X_facenet_rms, X_facenet_mean, X_facenet_median], axis=1)
 
+    ################### DATASET #####################
 
-    cluster.fit(X_facenet_features, y, "HERE IS MY PUBLIC KEY")
+    ################### TRAINING #####################
+    # Train a model for new client.
+    pubkey = ""
+    cluster.fit(X_facenet_features, y, pubkey)
+
+    ################### TRAINING #####################
+
+    # Run inference on encrypted data, Listen on server - TODO
+    image = np.array([1, 2, 3])
+    response = cluster.predict(pubkey, image)
+
+    # Send response back to user - TODO
+
+    ################### INFERENCE #####################
