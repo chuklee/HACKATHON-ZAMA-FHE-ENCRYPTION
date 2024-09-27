@@ -15,9 +15,9 @@ class InferenceService:
         # TODO
         pass
 
-    def check_face(self, crypted_image: List[float]) -> float:
+    def check_face(self, crypted_image: List[float], user_id: str) -> int:
         # TODO: Implement actual face checking logic
-        return 0.9
+        return 9
 
     def check_user_exists(self, user_id: str) -> bool:
         """

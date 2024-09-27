@@ -10,12 +10,15 @@ router = APIRouter(tags=["Inference"])
 async def check_face(
     id: str,
     crypted_image: List[float],
+    user_id: str,
     i_service: InferenceService = Depends(dependency=inference_service),
 ) -> dict:
     if not i_service.check_user_exists(user_id=id):
         raise HTTPException(status_code=404, detail="User not found")
     try:
-        crypted_result: float = i_service.check_face(crypted_image=crypted_image)
+        crypted_result: float = i_service.check_face(
+            crypted_image=crypted_image, user_id=id
+        )
         token: int = i_service.generate_unique_token()
         return {"token": token * crypted_result}
     except Exception as e:
@@ -46,10 +49,10 @@ async def sign_in(
 ) -> dict:
     if not i_service.check_user_exists(user_id=user_id):
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     # Read the contents of the uploaded file
     model_content: bytes = await crypted_model.read()
-    
+
     # Pass the file content to the register_user method
     i_service.register_user(user_id=user_id, crypted_model=model_content)
     return {"token": i_service.generate_unique_token()}
