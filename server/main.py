@@ -2,6 +2,7 @@ import uvicorn
 
 from fastapi import FastAPI
 from server.routers import auth_router
+from server.config import settings
 
 
 def create_app() -> FastAPI:
@@ -20,7 +21,7 @@ def main() -> None:
     """Main function to set up logging and run the server."""
     app: FastAPI = create_app()
 
-    uvicorn.run(app=app, host="0.0.0.0", port=8000)
+    uvicorn.run(app=app, host="0.0.0.0", port=settings.SERVICE_PORT)
 
 
 if __name__ == "__main__":
