@@ -42,9 +42,9 @@ def load_embeddings_and_labels(folder_path: str, label: int, max_nb_images: int,
 
 def load_dataset(target_folder: str, max_nb_images=500, cache=True, deep_fake_folder: str = "./data/deepfake") -> tuple[np.ndarray, np.ndarray]:
     deep_fake_images_embeddings, deep_fake_labels = load_embeddings_and_labels(
-        deep_fake_folder, max_nb_images=max_nb_images, label=1, cache=cache)
+        deep_fake_folder, max_nb_images=max_nb_images, label=0, cache=cache)
     target_images_embeddings, target_images_labels = load_embeddings_and_labels(
-        target_folder, max_nb_images=max_nb_images, label=0, cache=cache)
+        target_folder, max_nb_images=max_nb_images, label=1, cache=cache)
     embeddings = np.vstack(
         [target_images_embeddings, deep_fake_images_embeddings])
     labels = np.hstack([target_images_labels, deep_fake_labels])
