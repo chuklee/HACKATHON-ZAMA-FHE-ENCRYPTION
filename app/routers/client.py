@@ -16,7 +16,6 @@ async def submit_form(user_input: str = Form(...), image: UploadFile = File(...)
     upload_dir = "app/uploads"
     os.makedirs(upload_dir, exist_ok=True)
     file_path = os.path.join(upload_dir, image.filename)  # type: ignore
-    
     with open(file_path, "wb") as buffer:
         content = await image.read()
         buffer.write(content)
