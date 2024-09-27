@@ -13,7 +13,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(router=client_router)
-    app.mount("/static", StaticFiles(directory="app/static"), name="static")
+    app.mount("/static", StaticFiles(directory="client/static"), name="static")
     return app
 
 
