@@ -11,3 +11,4 @@ pydantic-settings
 pydantic
 uvicorn
 python-multipart
+opencv-python

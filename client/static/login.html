@@ -1,0 +1,71 @@
+<!-- app/static/login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechMart - Connexion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <header class="bg-gray-800 p-4">
+        <h1 class="text-3xl font-bold text-center"><i class="fas fa-shopping-cart mr-2"></i>TechMart</h1>
+    </header>
+    
+    <main class="flex-grow container mx-auto p-4 flex items-center justify-center">
+        <div class="max-w-md w-full bg-gray-800 rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-6 text-center">Connexion</h2>
+            <form id="login-form" method="POST" action="/login" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium"> Email Address </label>
+                    <input type="email" id="email" name="email" required
+                           class="w-full px-3 py-2 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Connexion
+                </button>
+            </form>
+            <div id="error-message" class="mt-4 text-center text-red-500"></div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 p-4 text-center">
+        <p>&copy; 2023 TechMart. Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+
+            try {
+                const emailEncoded = encodeURIComponent(email);
+
+                const url = `http://0.0.0.0:8000/login?email=${emailEncoded}`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded', 
+                    },
+                });
+
+                if (response.ok) {
+                    window.location.href = '/index';
+                } else {
+                    window.location.href = '/createAccount';
+                }
+
+
+            } catch (error) {
+                document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';
+                console.error('Erreur lors de la requête:', error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -7,7 +7,8 @@ from typing import Union
 
 class InferenceService:
     def __init__(self):
-        self.model = DeepFace.build_model("Facenet")
+        #self.model = DeepFace.build_model("Facenet")
+        self.model = None
 
     def create_embeddings(self, bytes_image: bytes) -> Union[np.ndarray, None]:
         try:
