@@ -32,11 +32,10 @@ def create_account(request: Request) -> FileResponse:
     return FileResponse(path="client/static/createAccount.html")
 
 
-@router.post("/scan_image")
-async def scan_image(
-    user_id: str = Form(...),
-    image: UploadFile = File(...),
-    inference_service: InferenceService = Depends(inference_service),
+@app.post("/scan_image")
+async def scan_image(image: UploadFile = File(...), 
+                     email: str = Form(...),
+                     i_service: InferenceService = Depends(inference_service)
 ):
     # Read the contents of the file
     contents: bytes = await image.read()
