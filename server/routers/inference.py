@@ -4,7 +4,7 @@ from server.dependencies import inference_service
 from server.services import InferenceService
 from typing import List
 from pydantic import BaseModel
-
+import time
 router = APIRouter(tags=["Inference"])
 
 i_service = InferenceService()
@@ -20,6 +20,7 @@ class CheckFaceRequest(BaseModel):
 async def check_face(
     request: CheckFaceRequest,
 ) -> dict:
+    time.sleep(1)
     if not i_service.check_user_exists(user_id=request.user_id):
         raise HTTPException(status_code=404, detail="User not found")
     try:
@@ -54,6 +55,7 @@ class TokenRequest(BaseModel):
 
 @router.post("/check_token")
 async def check_token(request: TokenRequest):
+    
     print(f"Token: {request.token}")
     return i_service.check_token(token=request.token)
 
@@ -64,6 +66,7 @@ async def sign_in(
     model: UploadFile = File(...),
     crypted_model: bytes = Form(...),
 ) -> dict:
+    time.sleep(1)
     # Read the contents of the uploaded file
     model_bytes: bytes = await model.read()
 
