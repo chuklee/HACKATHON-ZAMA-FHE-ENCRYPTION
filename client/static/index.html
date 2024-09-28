@@ -190,22 +190,29 @@
                         });
         
                         if (response.ok) {
-                            // Traiter la réponse du serveur si nécessaire
                             const result = await response.json();
                             console.log('Image envoyée avec succès:', result);
+        
+                            // Afficher "Access Granted" en vert
+                            const messageDiv = document.getElementById('error-message');
+                            messageDiv.innerText = 'Access Granted ✅';
+                            messageDiv.style.color = 'green';
                         } else {
-                            const errorData = await response.json();
-                            document.getElementById('error-message').innerText = `Erreur lors de l'envoi de l'image: ${errorData.detail || 'Erreur inconnue'}`;
+                            messageDiv.innerText = `Access Denied ❌`;
+                            messageDiv.style.color = 'red';
                         }
                     } catch (error) {
                         document.getElementById('error-message').innerText = 'Une erreur est survenue lors de l\'envoi de l\'image.';
+                        document.getElementById('error-message').style.color = 'red';
                         console.error('Erreur lors de l\'envoi de l\'image:', error);
                     }
                 }, 'image/png');
             } else {
                 document.getElementById('error-message').innerText = 'La vidéo n\'est pas prête. Veuillez réessayer.';
+                document.getElementById('error-message').style.color = 'red';
             }
         }
+        
     
     </script>
 </body>
