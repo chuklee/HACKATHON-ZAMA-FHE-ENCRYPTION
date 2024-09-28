@@ -54,6 +54,7 @@ class TokenRequest(BaseModel):
 
 @router.post("/check_token")
 async def check_token(request: TokenRequest):
+    print(f"Token: {request.token}")
     return i_service.check_token(token=request.token)
 
 

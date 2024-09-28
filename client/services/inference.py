@@ -206,7 +206,11 @@ class InferenceService:
         """
         server_url = settings.SERVEUR_ENDPOINT + "/check_token"
         data = {"token": int(token)}
-        async with httpx.AsyncClient() as client:
-            response = await client.post(server_url, json=data)
-            response.raise_for_status()
-            return response.json()
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.post(server_url, json=data)
+                response.raise_for_status()
+                return response.json()
+        except Exception as e:
+            print(f"Token is not valid: {str(e)}")
+            raise HTTPException(status_code=401, detail="Token is not valid")
