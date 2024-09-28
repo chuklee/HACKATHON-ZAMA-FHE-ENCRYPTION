@@ -8,34 +8,86 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        /* Scan effect in a slight spiral motion */
+        .scan-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* Animation spiral */
+        @keyframes spiral-scan {
+            0% {
+                transform: scale(0.8) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Active class for scan effect */
+        .scan-active {
+            animation: spiral-scan 3s ease-in-out;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col">
-    <header class="bg-gray-800 p-4">
-        <h1 class="text-3xl font-bold text-center"><i class="fas fa-shopping-cart mr-2"></i>TechMart</h1>
-    </header>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col" style="background-image: url('/static/images/background.jpg');">
     
-    <main class="flex-grow container mx-auto p-4">
-        <div class="max-w-md mx-auto bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <div class="p-4">
-                <h2 class="text-xl font-semibold mb-4">Smart Check-In</h2>
-                <div class="camera-container relative mb-4">
-                    <video id="camera-feed" autoplay class="w-full h-64 object-cover"></video>
-                    <canvas id="captured-image" class="w-full h-64 object-cover" style="display:none;"></canvas>
-                    <div id="scan-effect" class="scan-effect"></div>
-                    <div class="absolute inset-0 border-4 border-blue-500 opacity-50 rounded-lg"></div>
-                </div>
-                <div id="status" class="text-center mb-4 h-8"></div>
-                <button id="capture-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    <i class="fas fa-camera mr-2"></i>Capture Image
-                </button>
+    <main class="flex-grow container mx-auto p-6 flex flex-col lg:flex-row items-center justify-center space-y-16 lg:space-y-0 lg:space-x-28">
+    
+        <!-- Camera Section -->
+        <div class="max-w-md w-full flex justify-center items-center">
+            <div class="relative">
+                <!-- Vidéo circulaire centrée -->
+                <video id="camera-feed" autoplay class="w-full max-w-md max-h-md aspect-square bg-black rounded-full object-cover shadow-2xl ring-4 ring-gray-300 ring-opacity-50 hover:ring-blue-500 hover:ring-opacity-75 transition-all duration-300 ease-in-out transform hover:scale-105"></video>
+    
+                <!-- Scan Effect -->
+                <div id="scan-effect" class="scan-effect"></div>
             </div>
         </div>
+    
+        <!-- Form Section -->
+        <div class="max-w-sm w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 lg:w-1/3 transform transition-all duration-300 hover:scale-102 hover:shadow-md">
+            <h2 class="text-xl font-semibold mb-4 text-center">Smart Check-In</h2>
+            
+            <div class="text-center">
+                <!-- Taille réduite du bouton -->
+                <button id="begin-scan-btn" class="w-3/4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 text-sm">
+                    Scan 🔍
+                </button>
+            </div>
+        
+            <div id="error-message" class="mt-4 text-center text-red-500"></div>
+        </div>
+        
+        
     </main>
 
-    <footer class="bg-gray-800 p-4 text-center">
-        <p>&copy; 2023 TechMart. All rights reserved.</p>
-    </footer>
-
     <script src="/static/js/script.js"></script>
+    <script>
+        document.getElementById('begin-scan-btn').addEventListener('click', function () {
+            const scanEffect = document.getElementById('scan-effect');
+            // Toggle the animation class
+            scanEffect.classList.add('scan-active');
+
+            // Remove the class after 3 seconds
+            setTimeout(function () {
+                scanEffect.classList.remove('scan-active');
+            }, 3000);  // L'effet dure 3 secondes
+        });
+    </script>
 </body>
 </html>
