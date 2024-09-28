@@ -44,10 +44,20 @@ async def scan_image(
     image_embedding: np.ndarray = inference_service.get_image_embedding(
         image_path=image_path
     )
-    inference_service.crypt_image(contents=contents)
+    crypt_image = inference_service.crypt_image(image_embedding, user_id)
     serialized_key: bytes = inference_service.get_serialize_key(user_id=user_id)
-
-    return JSONResponse(content={"message": "Image received successfully"})
+    # request to the server
+    response = await inference_service.send_check_face_request(
+        crypted_image=crypt_image,
+        serialized_key=serialized_key,
+        user_id=user_id
+    )
+    crypted_result = response["result"]
+    decrypted_result = inference_service.decrypt_result(crypted_result, user_id)
+    if decrypted_result == 42:
+        return JSONResponse(content={"message": "Face recognized"})
+    else:
+        return JSONResponse(content={"message": "Face not recognized"})
 
 
 @router.post("/submitAccount")
