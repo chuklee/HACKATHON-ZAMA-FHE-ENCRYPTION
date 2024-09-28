@@ -196,14 +196,16 @@
                             // Afficher "Access Granted" en vert
                             const messageDiv = document.getElementById('error-message');
                             messageDiv.innerText = 'Access Granted ✅';
-                            messageDiv.style.color = 'green';
+                            messageDiv.classList.add('bg-gray-200/20', 'text-green-300', 'px-4', 'py-3', 'rounded', 'mt-4', 'icon-geistmono');
                         } else {
-                            messageDiv.innerText = `Access Denied ❌`;
-                            messageDiv.style.color = 'red';
+                            const messageDiv = document.getElementById('error-message');
+                            messageDiv.innerText = 'Access Denied ❌';
+                            messageDiv.classList.add('bg-gray-200/20', 'text-red-300', 'px-4', 'py-3', 'rounded', 'mt-4', 'icon-geistmono');
                         }
                     } catch (error) {
-                        document.getElementById('error-message').innerText = 'Une erreur est survenue lors de l\'envoi de l\'image.';
-                        document.getElementById('error-message').style.color = 'red';
+                        const messageDiv = document.getElementById('error-message');
+                        messageDiv.innerText = 'Access Denied ❌';
+                        messageDiv.classList.add('bg-gray-200/20', 'text-red-300', 'px-4', 'py-3', 'rounded', 'mt-4', 'icon-geistmono');
                         console.error('Erreur lors de l\'envoi de l\'image:', error);
                     }
                 }, 'image/png');

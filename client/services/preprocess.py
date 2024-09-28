@@ -23,6 +23,7 @@ def compute_embeddings_and_labels(
             embedding_obj = DeepFace.represent(
                 img_path=image,
                 model_name="Facenet",
+                enforce_detection=False,
             )
             embedding = embedding_obj[0]["embedding"]
             embeddings.append(embedding)
