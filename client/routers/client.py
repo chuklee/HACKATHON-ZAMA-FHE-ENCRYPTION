@@ -32,12 +32,20 @@ def create_account(request: Request) -> FileResponse:
     return FileResponse(path="client/static/createAccount.html")
 
 
-@router.post("/scan_image")
-async def scan_image(
-    user_id: str = Form(...),
-    image: UploadFile = File(...),
-    inference_service: InferenceService = Depends(inference_service),
+@app.post("/scan_image")
+async def scan_image(image: UploadFile = File(...), 
+                     email: str = Form(...),
+                     i_service: InferenceService = Depends(inference_service)
 ):
+                   
+    logging.info(f'Received image: filename={image.filename}, content_type={image.content_type}')
+    logging.info(f'Received email: {email}')
+    image_content: bytes = await image.read()
+    i_service.save_image(image_content=image_content, user_id=email)
+    model_path: str = i_service.get_model(user_id=email)
+    image_path: str = i_service.save_image(image_content=image_content, user_id=email)
+    result: str = i_service.scan_image(image_path=image_path, model_path=model_path)
+    return JSONResponse(content={'result': result})
     
 
 @router.post("/submitAccount")
