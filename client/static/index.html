@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMart - Smart Shopping</title>
+    <title>Zauth - Smart Check-In</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ScrollReveal CDN -->
+    <script src="https://unpkg.com/scrollreveal"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <link rel="stylesheet" href="/static/css/styles.css">
     <style>
         /* Scan effect in a slight spiral motion */
@@ -44,15 +45,21 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-900 text-white min-h-screen flex flex-col" style="background-image: url('/static/images/background.jpg');">
     
+    <!-- Header Aligné en Haut à Gauche -->
+    <header class="container mx-auto p-6">
+        <h1 class="text-4xl font-bold text-left text-white icon-geistmono">ZAuth.</h1>
+    </header>
+
     <main class="flex-grow container mx-auto p-6 flex flex-col lg:flex-row items-center justify-center space-y-16 lg:space-y-0 lg:space-x-28">
     
         <!-- Camera Section -->
-        <div class="max-w-md w-full flex justify-center items-center">
+        <div class="max-w-md w-full flex justify-center items-center video-reveal">
             <div class="relative">
                 <!-- Vidéo circulaire centrée -->
-                <video id="camera-feed" autoplay class="w-full max-w-md max-h-md aspect-square bg-black rounded-full object-cover shadow-2xl ring-4 ring-gray-300 ring-opacity-50 hover:ring-blue-500 hover:ring-opacity-75 transition-all duration-300 ease-in-out transform hover:scale-105"></video>
+                <video id="camera-feed" autoplay muted class="w-full max-w-md max-h-md aspect-square bg-black rounded-full object-cover shadow-2xl ring-4 ring-gray-300 ring-opacity-50 hover:ring-blue-500 hover:ring-opacity-75 transition-all duration-300 ease-in-out transform hover:scale-105"></video>
     
                 <!-- Scan Effect -->
                 <div id="scan-effect" class="scan-effect"></div>
@@ -60,12 +67,12 @@
         </div>
     
         <!-- Form Section -->
-        <div class="max-w-sm w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 lg:w-1/3 transform transition-all duration-300 hover:scale-102 hover:shadow-md">
-            <h2 class="text-xl font-semibold mb-4 text-center">Smart Check-In</h2>
+        <div class="max-w-sm w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 lg:w-1/3 transform transition-all duration-300 hover:scale-102 hover:shadow-md form-reveal">
+            <h2 class="text-xl font-semibold mb-4 text-center icon-geistmono">Smart Check-In</h2>
             
             <div class="text-center">
                 <!-- Taille réduite du bouton -->
-                <button id="begin-scan-btn" class="w-3/4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 text-sm">
+                <button id="begin-scan-btn" class="w-3/4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 text-sm icon-geistmono">
                     Scan 🔍
                 </button>
             </div>
@@ -73,20 +80,92 @@
             <div id="error-message" class="mt-4 text-center text-red-500"></div>
         </div>
         
-        
     </main>
 
-    <script src="/static/js/script.js"></script>
+    <!-- <footer class="bg-gray-800 p-4 text-center">
+        <p>&copy; 2023 TechMart. Tous droits réservés.</p>
+    </footer> -->
+
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialisation de ScrollReveal avec les animations pour différents éléments
+
+            // Animation pour le header "Zauth."
+            ScrollReveal().reveal('header h1', {
+                duration: 1000,
+                origin: 'left',
+                distance: '50px',
+                opacity: 0,
+                easing: 'ease-in-out',
+                delay: 100
+            });
+
+            // Animation pour la section vidéo avec un zoom-in et glissement vers le bas
+            ScrollReveal().reveal('.video-reveal', {
+                duration: 1200,          // Durée de l'animation
+                scale: 0.9,              // Zoom initial (90%)
+                distance: '30px',        // Glissement vers le haut
+                origin: 'bottom',        // Animation qui part du bas
+                opacity: 0,              // Apparition progressive
+                easing: 'ease-in-out',   // Transition fluide
+                delay: 200               // Délai avant le début
+            });
+
+            // Animation pour la section formulaire avec un glissement depuis la droite
+            ScrollReveal().reveal('.form-reveal', {
+                duration: 1200,          // Durée de l'animation
+                distance: '60px',        // Distance de glissement depuis la droite
+                origin: 'right',         // Animation qui part de la droite
+                opacity: 0,              // Apparition progressive
+                easing: 'ease-in-out',   // Transition fluide
+                delay: 400               // Délai un peu plus long pour que l'effet soit coordonné
+            });
+
+            // Appelle les fonctions de remplissage de l'email et de démarrage de la caméra après le chargement de la page
+            fillEmailFromUrl();
+            startCamera();
+        });
+
+        // Fonction pour remplir l'email à partir des paramètres de l'URL
+        function fillEmailFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            if (email) {
+                document.getElementById('email').value = decodeURIComponent(email);
+            }
+        }
+
+        // Fonction pour démarrer la caméra
+        async function startCamera() {
+            const cameraFeed = document.getElementById('camera-feed');
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    cameraFeed.srcObject = stream;
+                } catch (error) {
+                    console.error('Erreur lors de l\'accès à la caméra:', error);
+                    document.getElementById('error-message').innerText = 'Erreur lors de l\'accès à la caméra. Veuillez vérifier vos permissions.';
+                }
+            } else {
+                document.getElementById('error-message').innerText = 'Votre navigateur ne supporte pas l\'accès à la caméra.';
+            }
+        }
+
+        // Gestionnaire d'événements pour le bouton "Scan"
         document.getElementById('begin-scan-btn').addEventListener('click', function () {
             const scanEffect = document.getElementById('scan-effect');
-            // Toggle the animation class
+            // Ajouter la classe d'animation
             scanEffect.classList.add('scan-active');
 
-            // Remove the class after 3 seconds
+            // Supprimer la classe après 3 secondes
             setTimeout(function () {
                 scanEffect.classList.remove('scan-active');
             }, 3000);  // L'effet dure 3 secondes
+
+            // Ajoutez ici la logique de scan (par exemple, utiliser une bibliothèque de reconnaissance d'image)
+            // Exemple :
+            // startScan();
         });
     </script>
 </body>

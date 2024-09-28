@@ -32,25 +32,20 @@ def create_account(request: Request) -> FileResponse:
     return FileResponse(path="client/static/createAccount.html")
 
 
-@router.post("/get_image")
-async def get_image(
+@router.post("/scan_image")
+async def scan_image(
+    user_id: str = Form(...),
     image: UploadFile = File(...),
     inference_service: InferenceService = Depends(inference_service),
-) -> JSONResponse:
+):
     # Read the contents of the file
-    contents = await image.read()
-
-    # Get the size of the image
-    size = len(contents)
-
-    # Return a confirmation message with the size of the image
-    return JSONResponse(
-        content={
-            "message": "Image received successfully",
-            "filename": image.filename,
-            "size": size,
-        }
-    )
+    contents: bytes = await image.read()
+    image_path: str = inference_service.save_image(contents=contents, user_id=user_id)
+    image_embedding: np.ndarray = inference_service.get_image_embedding(image_path=image_path)
+    inference_service.crypt_image(contents=contents)
+    serialized_key: bytes = inference_service.get_serialize_key(user_id=user_id)
+    
+    return JSONResponse(content={"message": "Image received successfully"})
 
 
 @router.post("/submitAccount")

@@ -60,3 +60,15 @@ body {
 .bg-transparent {
     background-color: rgba(128, 128, 128, 0); /* Adjust the alpha value for desired transparency */
 }
+
+
+@font-face {
+    font-family: 'GeistMono';
+    src: url('/static/fonts/GeistMono-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon-geistmono {
+    font-family: 'GeistMono', monospace;
+}

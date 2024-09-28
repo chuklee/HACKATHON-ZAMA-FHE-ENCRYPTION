@@ -4,61 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMart - Créer un compte</title>
+    <title>Zauth - Create Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=GeistMono:wght@400;700&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 
 <body class="bg-gray-900 text-white min-h-screen flex flex-col" style="background-image: url('/static/images/background.jpg');">
-    <!-- <header class="bg-gray-800 p-4">
-        <h1 class="text-3xl font-bold text-center"><i class="fas fa-user-plus mr-2"></i>Créer un compte</h1>
-    </header> -->
-
     
+    <!-- Header Aligné en Haut à Gauche -->
+    <header class="container mx-auto p-6">
+        <h1 class="text-4xl font-bold text-left text-white icon-geistmono">ZAuth.</h1>
+    </header>
+
     <main class="flex-grow container mx-auto p-6 flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 lg:space-x-12">
-    
-<!-- Camera Section -->
-<div class="max-w-md w-full p-6 lg:p-0 lg:w-1/2 flex flex-col items-center video-reveal">
-    <div class="relative">
-        <video id="video-preview" autoplay muted class="w-full max-w-md max-h-md aspect-square bg-black rounded-full object-cover shadow-2xl ring-4 ring-gray-300 ring-opacity-50 hover:ring-blue-500 hover:ring-opacity-75 transition-all duration-300 ease-in-out transform hover:scale-105"></video>
+        
+        <!-- Section Vidéo avec ScrollReveal -->
+        <div class="max-w-md w-full p-6 lg:p-0 lg:w-1/2 flex flex-col items-center video-reveal">
+            <div class="relative">
+                <video id="video-preview" autoplay muted class="w-full max-w-md max-h-md aspect-square bg-black rounded-full object-cover shadow-2xl ring-4 ring-gray-300 ring-opacity-50 hover:ring-blue-500 hover:ring-opacity-75 transition-all duration-300 ease-in-out transform hover:scale-105"></video>
 
-    <!-- Recording indicator -->
-        <div id="rec-indicator" class="hidden absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full animate-pulse"></div>
-    </div>
-
-    <!-- Start Recording Button -->
-    <div class="text-center mt-6">
-        <button type="button" id="start-recording" class="bg-red-600 hover:bg-red-700 text-white font-bold w-16 h-16 rounded-full flex items-center justify-center animate-pulse hover:scale-110 active:scale-95 transition-all duration-300 ease-in-out">
-            <i class="fas fa-video"></i>
-        </button>
-    </div>
-</div>
-
-<!-- Form Section -->
-<div class="max-w-md w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 lg:w-1/2 transform transition-all duration-300 hover:scale-102 hover:shadow-md form-reveal">
-    <form id="create-account-form" method="POST" action="/submitAccount" class="space-y-6" enctype="multipart/form-data">
-        <div>
-            <label for="email" class="block text-sm font-medium text-gray-300">Email Address</label>
-            <input type="email" id="email" name="email" required class="w-full px-4 py-3 mt-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+                <!-- Indicateur d'Enregistrement -->
+                <div id="rec-indicator" class="hidden absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full animate-pulse"></div>
+            </div>
         </div>
-        <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102">
-            Create Account 🤗
-        </button>
-    </form>
-    <div id="error-message" class="mt-4 text-center text-red-500"></div>
-</div>
 
-
-    
+        <!-- Section Formulaire avec ScrollReveal -->
+        <div class="max-w-md w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 lg:w-1/2 transform transition-all duration-300 hover:scale-102 hover:shadow-md form-reveal">
+            <form id="create-account-form" method="POST" action="/submitAccount" class="space-y-6" enctype="multipart/form-data">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-300 icon-geistmono">Email Address</label>
+                    <input type="email" id="email" name="email" required class="w-full px-4 py-3 mt-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+                </div>
+                <button type="button" id="start-recording" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 icon-geistmono disabled:opacity-25">
+                    Record Video 📹
+                </button>
+                <!-- Bouton "Create Account" désactivé initialement -->
+                <button type="submit" id="create-account-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 icon-geistmono disabled:opacity-25" disabled>
+                    Create Account 🔐
+                </button>
+            </form>
+            <div id="error-message" class="mt-4 text-center text-red-500"></div>
+        </div>
     </main>
     
-    <!-- <footer class="bg-gray-800 p-4 text-center">
-        <p>&copy; 2023 TechMart. Tous droits réservés.</p>
-    </footer> -->
-
+    <!-- Votre script existant -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Animation pour la section vidéo avec un zoom-in et glissement vers le haut
@@ -71,7 +63,7 @@
                 easing: 'ease-in-out',   // Transition fluide
                 delay: 200               // Délai avant le début
             });
-    
+
             // Animation pour la section formulaire avec un glissement depuis la droite
             ScrollReveal().reveal('.form-reveal', {
                 duration: 1200,          // Durée de l'animation
@@ -81,13 +73,22 @@
                 easing: 'ease-in-out',   // Transition fluide
                 delay: 400               // Délai un peu plus long pour que l'effet soit coordonné
             });
-    
+
+            // Animation pour le header "Zauth."
+            ScrollReveal().reveal('header h1', {
+                duration: 1000,
+                origin: 'left',
+                distance: '50px',
+                opacity: 0,
+                easing: 'ease-in-out',
+                delay: 100
+            });
+
             // Appelle la fonction de caméra et remplissage de l'email après le chargement de la page
             fillEmailFromUrl();
             startCamera();
         });
 
-        // Add this function at the beginning of the script
         function fillEmailFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
@@ -96,7 +97,7 @@
             }
         }
 
-        // Call this function when the page loads
+        // Appelez cette fonction lorsque la page se charge
         window.onload = function () {
             fillEmailFromUrl();
             startCamera();
@@ -108,7 +109,7 @@
         let isRecording = false;
         const recIndicator = document.getElementById('rec-indicator');
 
-        // Function to start the camera
+        // Fonction pour démarrer la caméra
         async function startCamera() {
             const videoPreview = document.getElementById('video-preview');
 
@@ -142,7 +143,7 @@
                     isRecording = true;
                     recIndicator.classList.remove('hidden');
                 
-                    // Ajouter une classe d'animation plus subtile pour indiquer que l'enregistrement est en cours
+                    // Modifier le style du bouton "Record Video"
                     this.classList.remove('bg-red-600', 'hover:bg-red-700');
                     this.classList.add('bg-red-700', 'animate-pulse');
                     this.innerHTML = '<i class="fas fa-stop-circle"></i>';
@@ -167,11 +168,16 @@
             isRecording = false;
             recIndicator.classList.add('hidden');
         
-            // Remettre le bouton à son état initial (pulsation désactivée et retour au style initial)
+            // Remettre le bouton "Record Video" à son état initial et le désactiver
             const recordButton = document.getElementById('start-recording');
             recordButton.classList.remove('bg-red-700', 'animate-pulse');
             recordButton.classList.add('bg-red-600', 'hover:bg-red-700');
-            recordButton.innerHTML = '<i class="fas fa-video"></i>';
+            recordButton.innerHTML = '📹';
+            recordButton.disabled = true; // Désactiver le bouton "Record Video"
+        
+            // Activer le bouton "Create Account"
+            const createAccountButton = document.getElementById('create-account-button');
+            createAccountButton.disabled = false; // Activer le bouton "Create Account"
         }
 
         document.getElementById('create-account-form').addEventListener('submit', async function (event) {
@@ -197,7 +203,7 @@
                     window.location.href = '/index';
                 } else {
                     const errorData = await response.json();
-                    document.getElementById('error-message').innerText = `Error occurred while creating the account: ${errorData.detail || 'Unknown error'}`;
+                    document.getElementById('error-message').innerText = `Erreur lors de la création du compte: ${errorData.detail || 'Erreur inconnue'}`;
                 }
             } catch (error) {
                 document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';
