@@ -18,8 +18,18 @@ class InferenceService:
 
     def check_face(self, crypted_image, user_id: str, serialized_key: bytes):
         circuit, crypted_model = self.retrieve_model(user_id)
-        fhemodel_server = FHEModelServer(path_dir=f"server/user/{user_id}")
-        return fhemodel_server.run(crypted_image, crypted_model)
+        fhemodel_server = FHEModelServer(path_dir=f"server/users/{user_id}")
+        # Read the serialized_key from the file
+        with open(
+            f"server/users/{user_id}/serialized_evaluation_keys.ekl", "rb"
+        ) as file:
+            serialized_key = file.read()
+        with open(f"server/users/{user_id}/crypted_image.bin", "rb") as file:
+            crypted_image = file.read()
+        with open(f"server/users/{user_id}/W_enc.bin", "rb") as file:
+            W_enc = file.read()
+        inputs = (crypted_image, W_enc)
+        return fhemodel_server.run(inputs, serialized_evaluation_keys=serialized_key)
 
     def check_user_exists(self, user_id: str) -> bool:
         """
@@ -49,7 +59,7 @@ class InferenceService:
         """
         Save the uploaded crypted_model as a .zip file in the users folder
         """
-        users_folder = settings.users_folder
+        users_folder = settings.users_folder + f"/{user_id}"
         if users_folder is None:
             raise ValueError("Users folder is not set")
 
@@ -57,7 +67,7 @@ class InferenceService:
         os.makedirs(users_folder, exist_ok=True)
 
         # Define the path for the user's zip file
-        user_file_path = os.path.join(users_folder, f"{user_id}.zip")
+        user_file_path = os.path.join(users_folder, f"server.zip")
 
         try:
             with open(user_file_path, "wb") as file:

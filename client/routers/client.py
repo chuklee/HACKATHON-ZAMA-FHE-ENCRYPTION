@@ -49,7 +49,9 @@ async def scan_image(
     response = await i_service.send_check_face_request(
         crypted_image=crypt_image, serialized_key=serialized_key, user_id=user_id
     )
-    crypted_result = response["result"]
+    crypted_result = None
+    with open(f"client/temp/{user_id}/crypted_result.bin", "rb") as file:
+        crypted_result = file.read()
     decrypted_result = i_service.decrypt_result(crypted_result, user_id)
     SENSITIVE_DATA = await i_service.send_token(token=decrypted_result)
     if SENSITIVE_DATA["SENSITIVE_DATA"]:

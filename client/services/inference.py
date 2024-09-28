@@ -15,6 +15,7 @@ import logging
 from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
 from client.config import settings
 import httpx
+import base64
 
 
 class InferenceService:
@@ -102,7 +103,9 @@ class InferenceService:
             # Prepare the file for upload
             with open(model_path + "/server.zip", "rb") as file:
                 files = {"model": (f"{user_id}_model.zip", file, "application/zip")}
-
+                os.makedirs(f"server/users/{user_id}", exist_ok=True)
+                with open(f"server/users/{user_id}/W_enc.bin", "wb") as file:
+                    file.write(W_enc)
                 # Additional data to send with the request
                 data = {"user_id": user_id, "crypted_model": W_enc}
 
@@ -141,10 +144,11 @@ class InferenceService:
         Crypt the image embedding
         """
         fhemodel_client = FHEModelClient(
-            path_dir=f"client/temp/model/{user_id}", key_dir=f"client/temp/model/{user_id}"
+            path_dir=f"client/temp/model/{user_id}",
+            key_dir=f"client/temp/model/{user_id}",
         )
         input_e = fhemodel_client.quantize_encrypt_serialize(
-            image_embedding, np.zeros((1, 128))
+            image_embedding.reshape(1, 128), np.zeros((1, 128))
         )
         return input_e[0]
 
@@ -153,43 +157,55 @@ class InferenceService:
         Get the serialize key
         """
         fhemodel_client = FHEModelClient(
-            path_dir=f"client/temp/model/{user_id}", key_dir=f"client/temp/model/{user_id}"
+            path_dir=f"client/temp/model/{user_id}",
+            key_dir=f"client/temp/model/{user_id}",
         )
         return fhemodel_client.get_serialized_evaluation_keys()
 
     async def send_check_face_request(
-        self, crypted_image: List[float], serialized_key: bytes, user_id: str
+        self, crypted_image: bytes, serialized_key: bytes, user_id: str
     ) -> dict:
+        with open(
+            f"server/users/{user_id}/serialized_evaluation_keys.ekl", "wb"
+        ) as file:
+            file.write(serialized_key)
+        with open(f"server/users/{user_id}/crypted_image.bin", "wb") as file:
+            file.write(crypted_image)
         server_url = (
-            "http://your-server-url/check_face"  # Replace with your actual server URL
-        )
+            settings.SERVEUR_ENDPOINT + "/check_face"
+        )  # Use the server URL from settings
+        
 
+        # Encode the serialized_key to base64
+        serialized_key_b64 = base64.b64encode(serialized_key).decode("utf-8")
+        crypted_image_b64 = base64.b64encode(crypted_image).decode("utf-8")
         data = {
-            "crypted_image": crypted_image,
-            "serialized_key": serialized_key,
+            "crypted_image": crypted_image_b64,
+            "serialized_key": serialized_key_b64,
             "user_id": user_id,
         }
 
         async with httpx.AsyncClient() as client:
-            response = await client.post(server_url, json=data)
+            response = await client.post(server_url, json=data, timeout=200)
             response.raise_for_status()
             return response.json()
 
-    def decrypt_result(self, result: int, user_id: str):
+    def decrypt_result(self, result: bytes, user_id: str):
         """
         Decrypt the result
         """
         fhemodel_client = FHEModelClient(
-            path_dir=f"client/temp/model/{user_id}", key_dir=f"client/temp/model/{user_id}"
+            path_dir=f"client/temp/model/{user_id}",
+            key_dir=f"client/temp/model/{user_id}",
         )
-        return fhemodel_client.deserialize_decrypt_dequantize(result)[0]
+        return fhemodel_client.deserialize_decrypt_dequantize(result)[0][0]
 
     async def send_token(self, token):
         """
         Send the token to the server
         """
         server_url = settings.SERVEUR_ENDPOINT + "/check_token"
-        data = {"token": token}
+        data = {"token": int(token)}
         async with httpx.AsyncClient() as client:
             response = await client.post(server_url, json=data)
             response.raise_for_status()

@@ -23,4 +23,5 @@ minio-data/
 embeddings.npy
 labels.npy
 temp/
+users/
 .artifacts/
