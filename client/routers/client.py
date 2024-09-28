@@ -38,7 +38,15 @@ async def scan_image(
     image: UploadFile = File(...),
     inference_service: InferenceService = Depends(inference_service),
 ):
+    # Read the contents of the file
+    contents: bytes = await image.read()
+    image_path: str = inference_service.save_image(contents=contents, user_id=user_id)
+    image_embedding: np.ndarray = inference_service.get_image_embedding(image_path=image_path)
+    inference_service.crypt_image(contents=contents)
+    serialized_key: bytes = inference_service.get_serialize_key(user_id=user_id)
     
+    return JSONResponse(content={"message": "Image received successfully"})
+
 
 @router.post("/submitAccount")
 async def submit_account(

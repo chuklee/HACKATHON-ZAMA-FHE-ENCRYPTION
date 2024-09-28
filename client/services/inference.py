@@ -11,6 +11,7 @@ from .preprocess import load_dataset, RegNet
 from sklearn.linear_model import LogisticRegression
 from concrete.ml.torch.compile import compile_torch_model
 import logging
+from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
 
 
 class InferenceService:
@@ -29,7 +30,7 @@ class InferenceService:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error saving video: {e}")
 
-    def save_frames(self,user_id: str) -> str:
+    def save_frames(self, user_id: str) -> str:
         """
         Save 10 random frames from the video content using cv2 and return the path to the frames.
         """
@@ -77,6 +78,38 @@ class InferenceService:
         return save_model_path
         """
         return "temp/model/fake_id.zip"
+
+    def get_serialize_key(self, user_id: str) -> bytes:
+        """
+        Get the serialized key for the user
+        """
+        directory: str = f"temp/model/{user_id}/"
+        fhe_model_client = FHEModelClient(path_dir=directory, key_dir=directory)
+        evaluation_keys: bytes = fhe_model_client.get_serialized_evaluation_keys()
+        return evaluation_keys
+
+    def crypt_image(
+        self, user_id: str, contents: bytes, serialized_key: bytes
+    ) -> bytes:
+        # TODO
+        return None
+
+    def get_image_embedding(self, image_path: str) -> np.ndarray:
+        """
+        Get the image embedding
+        """
+        
+
+    def save_image(self, contents: bytes, user_id: str) -> str:
+        """
+        Save the image
+        """
+        image_id = str(uuid.uuid4())
+        image_path = f"temp/image/{user_id}/{image_id}.jpg"
+        os.makedirs(f"temp/image/{user_id}", exist_ok=True)
+        with open(file=image_path, mode="wb") as f:
+            f.write(contents)
+        return image_path
 
     def push_model(self, model_path: str, user_id: str) -> None:
         """
