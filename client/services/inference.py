@@ -27,8 +27,8 @@ class InferenceService:
         """
         try:
             video_id = str(uuid.uuid4())
-            os.makedirs(f"temp/{user_id}", exist_ok=True)
-            with open(file=f"temp/{user_id}/video.mp4", mode="wb") as f:
+            os.makedirs(f"client/temp/{user_id}", exist_ok=True)
+            with open(file=f"client/temp/{user_id}/video.mp4", mode="wb") as f:
                 f.write(video_content)
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error saving video: {e}")
@@ -37,20 +37,20 @@ class InferenceService:
         """
         Save 10 random frames from the video content using cv2 and return the path to the frames.
         """
-        video_path = f"temp/{user_id}/video.mp4"
+        video_path = f"client/temp/{user_id}/video.mp4"
         if not os.path.exists(video_path):
             raise HTTPException(status_code=404, detail="Video not found")
-
+        os.makedirs(f"client/temp/{user_id}/images", exist_ok=True)
         vidcap = cv2.VideoCapture(video_path)
         success, image = vidcap.read()
         count = 0
         while success and count < 10:
             cv2.imwrite(
-                f"temp/{user_id}/frame%d.jpg" % count, image
+                f"client/temp/{user_id}/images/frame%d.jpg" % count, image
             )  # save frame as JPEG file
             success, image = vidcap.read()
             count += 1
-        return f"temp/{user_id}/"
+        return f"client/temp/{user_id}/images"
 
     def train_model(self, frames_path: str, user_id: str):
         """
@@ -77,7 +77,7 @@ class InferenceService:
             n_bits=6,
             rounding_threshold_bits={"n_bits": 6, "method": "approximate"},
         )
-        save_path: str = f"temp/model/{user_id}"
+        save_path: str = f"client/temp/model/{user_id}"
         fhemodel_dev = FHEModelDev(save_path, quantized_module)
         fhemodel_dev.save()
         W_encrypted = self.encrypt_weights(save_path, W)
@@ -88,7 +88,7 @@ class InferenceService:
         Load the weights from the model.
         """
         fhemodel_client = FHEModelClient(save_path, key_dir=save_path)
-        input_e = fhemodel_client.encrypt_input(np.zeros((1, 128)), W)
+        input_e = fhemodel_client.quantize_encrypt_serialize(np.zeros((1, 128)), W)
         return input_e[1]
 
     def push_model(self, model_path: str, W_enc, user_id: str) -> None:
@@ -100,7 +100,7 @@ class InferenceService:
             url = settings.SERVEUR_ENDPOINT + "/sign-in"
 
             # Prepare the file for upload
-            with open(model_path, "rb") as file:
+            with open(model_path + "/server.zip", "rb") as file:
                 files = {"model": (f"{user_id}_model.zip", file, "application/zip")}
 
                 # Additional data to send with the request
@@ -124,10 +124,10 @@ class InferenceService:
         Save the image and return the path to the image.
         """
         image_id = str(uuid.uuid4())
-        os.makedirs(f"temp/image/{user_id}", exist_ok=True)
-        with open(file=f"temp/image/{user_id}/{image_id}.jpg", mode="wb") as f:
+        os.makedirs(f"client/temp/image/{user_id}", exist_ok=True)
+        with open(file=f"client/temp/image/{user_id}/{image_id}.jpg", mode="wb") as f:
             f.write(contents)
-        return f"temp/image/{user_id}/{image_id}.jpg"
+        return f"client/temp/image/{user_id}/{image_id}.jpg"
 
     def get_image_embedding(self, image_path: str) -> np.ndarray:
         """
@@ -141,7 +141,7 @@ class InferenceService:
         Crypt the image embedding
         """
         fhemodel_client = FHEModelClient(
-            path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
+            path_dir=f"client/temp/model/{user_id}", key_dir=f"client/temp/model/{user_id}"
         )
         input_e = fhemodel_client.quantize_encrypt_serialize(
             image_embedding, np.zeros((1, 128))
@@ -153,7 +153,7 @@ class InferenceService:
         Get the serialize key
         """
         fhemodel_client = FHEModelClient(
-            path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
+            path_dir=f"client/temp/model/{user_id}", key_dir=f"client/temp/model/{user_id}"
         )
         return fhemodel_client.get_serialized_evaluation_keys()
 
@@ -180,7 +180,7 @@ class InferenceService:
         Decrypt the result
         """
         fhemodel_client = FHEModelClient(
-            path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
+            path_dir=f"client/temp/model/{user_id}", key_dir=f"client/temp/model/{user_id}"
         )
         return fhemodel_client.deserialize_decrypt_dequantize(result)[0]
 

@@ -23,16 +23,11 @@ class InferenceService:
 
     def check_user_exists(self, user_id: str) -> bool:
         """
-        Check in the users folder if a file named {email}.parquet exists
+        Check in the users exists
         If it exists, return True
         If it does not exist, return False
         """
-        users_folder = settings.users_folder
-        if users_folder is None:
-            raise ValueError("Users folder is not set")
-        user_file = os.path.join(users_folder, f"{user_id}.zip")
-        print(user_file)
-        return os.path.exists(user_file)
+        return user_id in self.models
 
     def generate_unique_token(self) -> int:
         """

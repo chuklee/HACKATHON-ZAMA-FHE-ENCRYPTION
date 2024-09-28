@@ -36,7 +36,7 @@ async def check_user_exists(
 @router.post("/check_token")
 async def check_token(
     token: int, i_service: InferenceService = Depends(dependency=inference_service)
-) -> dict:
+) -> bool:
     return i_service.check_token(token=token)
 
 
