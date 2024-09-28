@@ -8,7 +8,7 @@ tf-keras
 matplotlib
 fastapi
 pydantic-settings
-pydantic
+pydantic==2.7.2
 uvicorn
 python-multipart
 opencv-python
