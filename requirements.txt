@@ -12,3 +12,4 @@ pydantic
 uvicorn
 python-multipart
 opencv-python
+httpx==0.27.2

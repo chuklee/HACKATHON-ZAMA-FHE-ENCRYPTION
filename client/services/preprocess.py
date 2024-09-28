@@ -11,7 +11,9 @@ def load_image_folder(folder_path: str, max_nb_images: int) -> list[str]:
     return images
 
 
-def compute_embeddings_and_labels(images: list[str], label: int) -> np.ndarray:
+def compute_embeddings_and_labels(
+    images: list[str], label: int
+) -> tuple[np.ndarray, np.ndarray]:
     from deepface import DeepFace
 
     embeddings = []

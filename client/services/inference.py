@@ -8,12 +8,13 @@ import os
 from fastapi import HTTPException
 import uuid
 import cv2
-from .preprocess import load_dataset, RegNet
+from .preprocess import load_dataset, RegNet, compute_embeddings_and_labels
 from sklearn.linear_model import LogisticRegression
 from concrete.ml.torch.compile import compile_torch_model
 import logging
 from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
-from config import settings
+from client.config import settings
+import httpx
 
 
 class InferenceService:
@@ -118,4 +119,67 @@ class InferenceService:
         except Exception as e:
             print(f"Error pushing model to server: {str(e)}")
 
-        # TODO
+    def save_image(self, contents: bytes, user_id: str) -> str:
+        """
+        Save the image and return the path to the image.
+        """
+        image_id = str(uuid.uuid4())
+        os.makedirs(f"temp/image/{user_id}", exist_ok=True)
+        with open(file=f"temp/image/{user_id}/{image_id}.jpg", mode="wb") as f:
+            f.write(contents)
+        return f"temp/image/{user_id}/{image_id}.jpg"
+
+    def get_image_embedding(self, image_path: str) -> np.ndarray:
+        """
+        Get the image embedding
+        """
+        embeddings, _ = compute_embeddings_and_labels(images=[image_path], label=0)
+        return embeddings[0]
+
+    def crypt_image(self, image_embedding: np.ndarray, user_id: str):
+        """
+        Crypt the image embedding
+        """
+        fhemodel_client = FHEModelClient(
+            path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
+        )
+        input_e = fhemodel_client.quantize_encrypt_serialize(
+            image_embedding, np.zeros((1, 128))
+        )
+        return input_e[0]
+
+    def get_serialize_key(self, user_id: str) -> bytes:
+        """
+        Get the serialize key
+        """
+        fhemodel_client = FHEModelClient(
+            path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
+        )
+        return fhemodel_client.get_serialized_evaluation_keys()
+
+    async def send_check_face_request(
+        self, crypted_image: List[float], serialized_key: bytes, user_id: str
+    ) -> dict:
+        server_url = (
+            "http://your-server-url/check_face"  # Replace with your actual server URL
+        )
+
+        data = {
+            "crypted_image": crypted_image,
+            "serialized_key": serialized_key,
+            "user_id": user_id,
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(server_url, json=data)
+            response.raise_for_status()
+            return response.json()
+
+    def decrypt_result(self, result: int, user_id: str):
+        """
+        Decrypt the result
+        """
+        fhemodel_client = FHEModelClient(
+            path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
+        )
+        return fhemodel_client.deserialize_decrypt_dequantize(result)[0]

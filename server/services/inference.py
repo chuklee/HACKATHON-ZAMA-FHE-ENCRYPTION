@@ -4,6 +4,7 @@ import os
 import random
 from fastapi import HTTPException
 from typing import List
+from concrete.ml.deployment import FHEModelClient, FHEModelServer
 
 
 class InferenceService:
@@ -15,10 +16,10 @@ class InferenceService:
     def retrieve_model(self, user_id: str):
         return self.models[user_id]
 
-    def check_face(self, crypted_image: List[float], user_id: str) -> int:
+    def check_face(self, crypted_image, user_id: str, serialized_key: bytes):
         circuit, crypted_model = self.retrieve_model(user_id)
-        # TODO: Implement actual face checking logic
-        return 9
+        fhemodel_server = FHEModelServer(path_dir=f"server/user/{user_id}")
+        return fhemodel_server.run(crypted_image, crypted_model)
 
     def check_user_exists(self, user_id: str) -> bool:
         """

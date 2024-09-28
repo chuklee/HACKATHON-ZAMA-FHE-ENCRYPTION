@@ -32,27 +32,25 @@ def create_account(request: Request) -> FileResponse:
     return FileResponse(path="client/static/createAccount.html")
 
 
-@app.post("/scan_image")
-async def scan_image(image: UploadFile = File(...), 
-                     email: str = Form(...),
-                     i_service: InferenceService = Depends(inference_service)
+@router.post("/scan_image")
+async def scan_image(
+    image: UploadFile = File(...),
+    email: str = Form(...),
+    i_service: InferenceService = Depends(inference_service),
 ):
+    user_id = email
     # Read the contents of the file
     contents: bytes = await image.read()
-    image_path: str = inference_service.save_image(contents=contents, user_id=user_id)
-    image_embedding: np.ndarray = inference_service.get_image_embedding(
-        image_path=image_path
-    )
-    crypt_image = inference_service.crypt_image(image_embedding, user_id)
-    serialized_key: bytes = inference_service.get_serialize_key(user_id=user_id)
+    image_path: str = i_service.save_image(contents=contents, user_id=user_id)
+    image_embedding: np.ndarray = i_service.get_image_embedding(image_path=image_path)
+    crypt_image = i_service.crypt_image(image_embedding, user_id)
+    serialized_key: bytes = i_service.get_serialize_key(user_id=user_id)
     # request to the server
-    response = await inference_service.send_check_face_request(
-        crypted_image=crypt_image,
-        serialized_key=serialized_key,
-        user_id=user_id
+    response = await i_service.send_check_face_request(
+        crypted_image=crypt_image, serialized_key=serialized_key, user_id=user_id
     )
     crypted_result = response["result"]
-    decrypted_result = inference_service.decrypt_result(crypted_result, user_id)
+    decrypted_result = i_service.decrypt_result(crypted_result, user_id)
     if decrypted_result == 42:
         return JSONResponse(content={"message": "Face recognized"})
     else:
