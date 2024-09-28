@@ -16,7 +16,7 @@
     
     <!-- Header Aligné en Haut à Gauche -->
     <header class="container mx-auto p-6">
-        <h1 class="text-4xl font-bold text-left text-white icon-geistmono">Zauth.</h1>
+        <h1 class="text-4xl font-bold text-left text-white icon-geistmono">ZAuth.</h1>
     </header>
 
     <main class="flex-grow container mx-auto p-6 flex flex-col lg:flex-row items-center justify-center space-y-8 lg:space-y-0 lg:space-x-12">
@@ -29,13 +29,6 @@
                 <!-- Indicateur d'Enregistrement -->
                 <div id="rec-indicator" class="hidden absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full animate-pulse"></div>
             </div>
-
-            <!-- Bouton Démarrer l'Enregistrement -->
-            <div class="text-center mt-6">
-                <button type="button" id="start-recording" class="bg-red-600 hover:bg-red-700 text-white font-bold w-16 h-16 rounded-full flex items-center justify-center animate-pulse hover:scale-110 active:scale-95 transition-all duration-300 ease-in-out">
-                    <i class="fas fa-video"></i>
-                </button>
-            </div>
         </div>
 
         <!-- Section Formulaire avec ScrollReveal -->
@@ -45,7 +38,11 @@
                     <label for="email" class="block text-sm font-medium text-gray-300 icon-geistmono">Email Address</label>
                     <input type="email" id="email" name="email" required class="w-full px-4 py-3 mt-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
                 </div>
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 icon-geistmono">
+                <button type="button" id="start-recording" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 icon-geistmono disabled:opacity-25">
+                    Record Video 📹
+                </button>
+                <!-- Bouton "Create Account" désactivé initialement -->
+                <button type="submit" id="create-account-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102 icon-geistmono disabled:opacity-25" disabled>
                     Create Account 🔐
                 </button>
             </form>
@@ -53,10 +50,7 @@
         </div>
     </main>
     
-    <!-- <footer class="bg-gray-800 p-4 text-center">
-        <p>&copy; 2023 TechMart. Tous droits réservés.</p>
-    </footer> -->
-
+    <!-- Votre script existant -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Animation pour la section vidéo avec un zoom-in et glissement vers le haut
@@ -95,7 +89,6 @@
             startCamera();
         });
 
-        // Ajoutez cette fonction au début du script
         function fillEmailFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
@@ -150,7 +143,7 @@
                     isRecording = true;
                     recIndicator.classList.remove('hidden');
                 
-                    // Ajouter une classe d'animation plus subtile pour indiquer que l'enregistrement est en cours
+                    // Modifier le style du bouton "Record Video"
                     this.classList.remove('bg-red-600', 'hover:bg-red-700');
                     this.classList.add('bg-red-700', 'animate-pulse');
                     this.innerHTML = '<i class="fas fa-stop-circle"></i>';
@@ -175,11 +168,16 @@
             isRecording = false;
             recIndicator.classList.add('hidden');
         
-            // Remettre le bouton à son état initial (pulsation désactivée et retour au style initial)
+            // Remettre le bouton "Record Video" à son état initial et le désactiver
             const recordButton = document.getElementById('start-recording');
             recordButton.classList.remove('bg-red-700', 'animate-pulse');
             recordButton.classList.add('bg-red-600', 'hover:bg-red-700');
-            recordButton.innerHTML = '<i class="fas fa-video"></i>';
+            recordButton.innerHTML = '📹';
+            recordButton.disabled = true; // Désactiver le bouton "Record Video"
+        
+            // Activer le bouton "Create Account"
+            const createAccountButton = document.getElementById('create-account-button');
+            createAccountButton.disabled = false; // Activer le bouton "Create Account"
         }
 
         document.getElementById('create-account-form').addEventListener('submit', async function (event) {
@@ -205,7 +203,7 @@
                     window.location.href = '/index';
                 } else {
                     const errorData = await response.json();
-                    document.getElementById('error-message').innerText = `Error occurred while creating the account: ${errorData.detail || 'Unknown error'}`;
+                    document.getElementById('error-message').innerText = `Erreur lors de la création du compte: ${errorData.detail || 'Erreur inconnue'}`;
                 }
             } catch (error) {
                 document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';
