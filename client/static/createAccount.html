@@ -184,6 +184,7 @@
             event.preventDefault();
 
             const email = document.getElementById('email').value;
+            localStorage.setItem('email', email);
 
             // Créer un objet FormData pour envoyer la vidéo et l'email
             const formData = new FormData();
