@@ -44,15 +44,18 @@ async def check_token(
 @router.post(path="/sign-in")
 async def sign_in(
     user_id: str,
-    crypted_model: UploadFile = File(...),
+    circuit: UploadFile = File(...),
+    crypted_model=bytes,
     i_service: InferenceService = Depends(dependency=inference_service),
 ) -> dict:
     if not i_service.check_user_exists(user_id=user_id):
         raise HTTPException(status_code=404, detail="User not found")
 
     # Read the contents of the uploaded file
-    model_content: bytes = await crypted_model.read()
+    circuit: bytes = await circuit.read()
 
     # Pass the file content to the register_user method
-    i_service.register_user(user_id=user_id, crypted_model=model_content)
+    i_service.register_user(
+        user_id=user_id, crypted_model=crypted_model, circuit=circuit
+    )
     return {"token": i_service.generate_unique_token()}

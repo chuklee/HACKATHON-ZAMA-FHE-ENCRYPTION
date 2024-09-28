@@ -10,12 +10,13 @@ class InferenceService:
     def __init__(self):
         self.qr_codes = {}
         self.tokens = {}
+        self.models = {}
 
-    def retrieve_model(self, pk: str):
-        # TODO
-        pass
+    def retrieve_model(self, user_id: str):
+        return self.models[user_id]
 
     def check_face(self, crypted_image: List[float], user_id: str) -> int:
+        circuit, crypted_model = self.retrieve_model(user_id)
         # TODO: Implement actual face checking logic
         return 9
 
@@ -48,7 +49,7 @@ class InferenceService:
             return self.tokens[token] > datetime.now()
         raise HTTPException(status_code=401, detail="Token is not valid")
 
-    def register_user(self, user_id: str, crypted_model: bytes):
+    def register_user(self, user_id: str, crypted_model: bytes, circuit: bytes):
         """
         Save the uploaded crypted_model as a .zip file in the users folder
         """
@@ -64,9 +65,11 @@ class InferenceService:
 
         try:
             with open(user_file_path, "wb") as file:
-                file.write(crypted_model)
+                file.write(circuit)
         except IOError as e:
             raise HTTPException(
                 status_code=500, detail=f"Failed to save user file: {str(e)}"
             )
+
+        self.models[user_id] = (user_file_path, crypted_model)
         return True

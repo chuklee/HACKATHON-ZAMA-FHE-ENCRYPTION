@@ -82,7 +82,5 @@ class RegNet(nn.Module):
         super().__init__()
         self.b = nn.Parameter(torch.ones(1) * b)
 
-    def forward(self, x):
-        X = x[:, :128]
-        W = x[:, 128:]
-        return ((X @ W.T + self.b) > 0).float()
+    def forward(self, X, W):
+        return ((X @ W.T + self.b) > 0).float() * 42
