@@ -42,7 +42,7 @@ async def scan_image(
 
     # Get the size of the image
     size = len(contents)
-
+    print(size)
     # Return a confirmation message with the size of the image
     return JSONResponse(
         content={
