@@ -60,33 +60,3 @@ body {
 .bg-transparent {
     background-color: rgba(128, 128, 128, 0); /* Adjust the alpha value for desired transparency */
 }
-
-/* Scan effect */
-.scan-effect {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.2); /* Une bande blanche avec opacité */
-    opacity: 0;
-    animation: scan 2s infinite;
-}
-
-@keyframes scan {
-    0% {
-        top: -100%;
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    50% {
-        top: 100%;
-        opacity: 1;
-    }
-    100% {
-        top: 100%;
-        opacity: 0;
-    }
-}

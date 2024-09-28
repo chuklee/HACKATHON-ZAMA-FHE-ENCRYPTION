@@ -56,7 +56,7 @@
             try {
                 const emailEncoded = encodeURIComponent(email);
 
-                const url = `http://localhost:8000/login?email=${emailEncoded}`;
+                const url = `http://localhost:8000/check_user_exists?user_id=${emailEncoded}`;
 
                 const response = await fetch(url, {
                     method: 'POST',
