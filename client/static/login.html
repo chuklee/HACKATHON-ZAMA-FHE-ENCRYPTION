@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechMart - Connexion</title>
+    <title>Zauth. - Connexion</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <!-- ScrollReveal CDN -->
+    <script src="https://unpkg.com/scrollreveal"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
@@ -15,48 +16,70 @@
         <h1 class="text-3xl font-bold text-center"><i class="fas fa-shopping-cart mr-2"></i>TechMart</h1>
     </header> -->
 
-    <main class="flex-grow container mx-auto p-4 flex items-center justify-center">
-        <div class="max-w-md w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:scale-102 hover:shadow-md reveal-box">
-            <h2 class="text-3xl font-semibold mb-6 text-center text-white">Connexion </h2>
-            <form id="login-form" method="POST" action="/login" class="space-y-6">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-300"> Email Address </label>
-                    <input type="email" id="email" name="email" required
-                           class="w-full px-4 py-3 mt-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
-                </div>
-                <button type="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Connexion
-                </button>
-            </form>
-            <div id="error-message" class="mt-4 text-center text-red-500"></div>
+    <main class="flex-grow container mx-auto p-4 flex flex-col">
+        <!-- Section du Titre -->
+        <header class="mb-20 pt-4">
+            <h1 class="text-4xl font-bold text-left text-white icon-geistmono">Zauth.</h1>
+        </header>
+    
+        <!-- Section de la Boîte de Connexion -->
+        <div class="flex-grow flex items-center justify-center">
+            <div class="max-w-md w-full bg-gray-800/40 backdrop-blur-md rounded-xl shadow-lg p-6 transform transition-all duration-300 hover:scale-102 hover:shadow-md reveal-box">
+                <!-- Application de la police GeistMono -->
+                <h2 class="text-3xl font-semibold mb-6 text-center text-white icon-geistmono">Welcome 🤗</h2>
+                <form id="login-form" method="POST" action="/login" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm text-gray-300 icon-geistmono"> Email Address </label>
+                        <input type="email" id="email" name="email" required
+                               class="w-full px-4 py-3 mt-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out">
+                    </div>
+                    <button type="submit"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-102">
+                        <i class="fas mr-2 icon-geistmono">Connexion</i>
+                    </button>
+                </form>
+                <div id="error-message" class="mt-4 text-center text-red-500"></div>
+            </div>
         </div>
     </main>
     
+
 
     <!-- <footer class="bg-gray-800 p-4 text-center">
         <p>&copy; 2023 TechMart. Tous droits réservés.</p>
     </footer> -->
 
     <script>
+        // Initialisation de ScrollReveal
+        ScrollReveal().reveal('.reveal-box', {
+            duration: 1000,
+            origin: 'top',
+            distance: '50px',
+            opacity: 0,
+            easing: 'ease-out',
+            reset: false
+        });
 
-        gsap.from('.reveal-box', {
-            duration: 1, 
-            opacity: 0.5,  
-            y: -300,       
-            ease: "power10.out" 
+        // Si vous souhaitez animer d'autres éléments, vous pouvez les ajouter ici
+        ScrollReveal().reveal('.icon-geistmono', {
+            duration: 1000,
+            origin: 'bottom',
+            distance: '20px',
+            opacity: 0,
+            easing: 'ease-out',
+            reset: false,
+            interval: 200
         });
 
         document.getElementById('login-form').addEventListener('submit', async function(event) {
             event.preventDefault();
-
 
             const email = document.getElementById('email').value;
 
             try {
                 const emailEncoded = encodeURIComponent(email);
 
-                const url = `http://localhost:8000/check_user_exists?user_id=${emailEncoded}`;
+                const url = `/check_user_exists?user_id=${emailEncoded}`; // Utilisation d'un chemin relatif
 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -72,8 +95,8 @@
                 }
 
             } catch (error) {
-                document.getElementById('error-message').innerText = 'An error occurred. Please try again.';
-                console.error('Error during the request:', error);
+                document.getElementById('error-message').innerText = 'Une erreur est survenue. Veuillez réessayer.';
+                console.error('Erreur lors de la requête :', error);
             }
         });
     </script>
