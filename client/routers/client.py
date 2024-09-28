@@ -37,16 +37,17 @@ async def scan_image(image: UploadFile = File(...),
                      email: str = Form(...),
                      i_service: InferenceService = Depends(inference_service)
 ):
-                   
-    logging.info(f'Received image: filename={image.filename}, content_type={image.content_type}')
-    logging.info(f'Received email: {email}')
-    image_content: bytes = await image.read()
-    i_service.save_image(image_content=image_content, user_id=email)
-    model_path: str = i_service.get_model(user_id=email)
-    image_path: str = i_service.save_image(image_content=image_content, user_id=email)
-    result: str = i_service.scan_image(image_path=image_path, model_path=model_path)
-    return JSONResponse(content={'result': result})
-    
+    # Read the contents of the file
+    contents: bytes = await image.read()
+    image_path: str = inference_service.save_image(contents=contents, user_id=user_id)
+    image_embedding: np.ndarray = inference_service.get_image_embedding(
+        image_path=image_path
+    )
+    inference_service.crypt_image(contents=contents)
+    serialized_key: bytes = inference_service.get_serialize_key(user_id=user_id)
+
+    return JSONResponse(content={"message": "Image received successfully"})
+
 
 @router.post("/submitAccount")
 async def submit_account(
@@ -67,6 +68,6 @@ async def submit_account(
     video_content: bytes = await video.read()
     i_service.save_video(video_content=video_content, user_id=email)
     frames_path: str = i_service.save_frames(user_id=email)
-    model_path: str = i_service.train_model(frames_path=frames_path, user_id=email)
-    i_service.push_model(model_path=model_path, user_id=email)
+    model_path, W_enc = i_service.train_model(frames_path=frames_path, user_id=email)
+    i_service.push_model(model_path=model_path, W_enc=W_enc, user_id=email)
     return JSONResponse(content={"message": "Account created successfully"})
