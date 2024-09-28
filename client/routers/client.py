@@ -32,8 +32,8 @@ def create_account(request: Request) -> FileResponse:
     return FileResponse(path="client/static/createAccount.html")
 
 
-@router.post("/get_image")
-async def get_image(
+@router.post("/scan_image")
+async def scan_image(
     image: UploadFile = File(...),
     inference_service: InferenceService = Depends(inference_service),
 ) -> JSONResponse:
