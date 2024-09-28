@@ -183,3 +183,14 @@ class InferenceService:
             path_dir=f"temp/model/{user_id}", key_dir=f"temp/model/{user_id}"
         )
         return fhemodel_client.deserialize_decrypt_dequantize(result)[0]
+
+    async def send_token(self, token):
+        """
+        Send the token to the server
+        """
+        server_url = settings.SERVEUR_ENDPOINT + "/check_token"
+        data = {"token": token}
+        async with httpx.AsyncClient() as client:
+            response = await client.post(server_url, json=data)
+            response.raise_for_status()
+            return response.json()

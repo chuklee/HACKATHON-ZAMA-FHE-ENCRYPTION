@@ -51,10 +51,11 @@ async def scan_image(
     )
     crypted_result = response["result"]
     decrypted_result = i_service.decrypt_result(crypted_result, user_id)
-    if decrypted_result == 42:
-        return JSONResponse(content={"message": "Face recognized"})
+    SENSITIVE_DATA = await i_service.send_token(token=decrypted_result)
+    if SENSITIVE_DATA["SENSITIVE_DATA"]:
+        return JSONResponse(content={"message": "SENSITIVE_DATA"})
     else:
-        return JSONResponse(content={"message": "Face not recognized"})
+        return JSONResponse(content={"message": "Face recognized"})
 
 
 @router.post("/submitAccount")
