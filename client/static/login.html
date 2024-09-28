@@ -79,7 +79,7 @@
             try {
                 const emailEncoded = encodeURIComponent(email);
 
-                const url = `/check_user_exists?user_id=${emailEncoded}`; // Utilisation d'un chemin relatif
+                const url = `http://localhost:8000/check_user_exists?user_id=${emailEncoded}`; // Utilisation d'un chemin relatif
 
                 const response = await fetch(url, {
                     method: 'POST',
