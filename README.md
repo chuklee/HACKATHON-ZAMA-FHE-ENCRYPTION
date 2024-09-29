@@ -17,19 +17,26 @@ ZAuth is a secure two-factor authentication system that leverages Fully Homomorp
 ## Workflow
 
 1. **User Registration**:
-    - The user captures a series of images on their device. These images are encoded using the FaceNet model to generate a user embedding.
-    - The generated embedding is encrypted using the user's key and transmitted to the server along with the user's ID.
-    - If this is a first registration, the server trains a logistic regression model using a deepfake dataset and user-provided images. This training occurs in the clear.
-    - The model weights are encrypted and stored on the server, making reverse engineering infeasible.
-    - The encrypted weights are mapped to the user's ID in a key-value store.
 
+   - The user captures a series of images on their device. These images are encoded using the FaceNet model to generate a user embedding.
+   - The generated embedding is encrypted using the user's key and transmitted to the server along with the user's ID.
+   - If this is a first registration, the server trains a logistic regression model using a deepfake dataset and user-provided images. This training occurs in the clear.
+   - The model weights are encrypted and stored on the server, making reverse engineering infeasible.
+   - The encrypted weights are mapped to the user's ID in a key-value store.
+   
+
+   ![Sign in](signin.jpeg) 
 2. **User Authentication**:
-    - During authentication, the user captures a new image on their device, which is encoded using the FaceNet model.
-    - The encoded image is encrypted using the user's key and sent to the server along with the user's ID.
-    - The server retrieves the correct encrypted model and performs the face recognition operation on the encrypted data.
-    - The server generates an encrypted response and multiplies it by a random value to ensure the user cannot manipulate the response.
-    - The encrypted response is sent back to the user, who decrypts it to obtain a unique token.
-    - The user sends the decrypted token back to the server for verification. If it matches the expected token, authentication is successful.
+
+   - During authentication, the user captures a new image on their device, which is encoded using the FaceNet model.
+   - The encoded image is encrypted using the user's key and sent to the server along with the user's ID.
+   - The server retrieves the correct encrypted model and performs the face recognition operation on the encrypted data.
+   - The server generates an encrypted response and multiplies it by a random value to ensure the user cannot manipulate the response.
+   - The encrypted response is sent back to the user, who decrypts it to obtain a unique token.
+   - The user sends the decrypted token back to the server for verification. If it matches the expected token, authentication is successful.
+
+
+    ![Login in](login.jpeg)
 
 ## Security Considerations
 
@@ -50,3 +57,4 @@ ZAuth is a secure two-factor authentication system that leverages Fully Homomorp
    git clone https://github.com/your-username/ZAuth.git
    cd ZAuth
 
+   ```
