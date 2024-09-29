@@ -71,5 +71,3 @@ ZAuth is a secure two-factor authentication system that leverages Fully Homomorp
    python -m client.main
    ```
 6. Connect to your localhost with the port 7860 and try to register yourself!
-
-   ```
