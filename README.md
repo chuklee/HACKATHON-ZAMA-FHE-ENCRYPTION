@@ -54,7 +54,7 @@ ZAuth is a secure two-factor authentication system that leverages Fully Homomorp
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/ZAuth.git
+   git clone https://github.com/chuklee/ppai_team4
    cd ZAuth
    ```
 2. Create a isolated environment with python 3.10
