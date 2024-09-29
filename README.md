@@ -49,4 +49,20 @@ ZAuth is a secure two-factor authentication system that leverages Fully Homomorp
    ```bash
    git clone https://github.com/your-username/ZAuth.git
    cd ZAuth
+   ```
+2. Create a isolated environment with python 3.10
+3. Install the requirements file:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4. Run the server:
+    ```bash
+    python -m server.main
+    ```
+5. Run the client:
+   ```bash
+   python -m client.main
+   ```
+6. Connect to your localhost with the port 7860 and try to register yourself!
+
 
